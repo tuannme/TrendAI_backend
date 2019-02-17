@@ -1,0 +1,4 @@
+flask
+click
+Flask-PyMongo
+python-dotenv

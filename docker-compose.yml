@@ -1,0 +1,22 @@
+version: '2.0'
+
+services:
+  app:
+    container_name: trendai_backend_app
+    build:
+      dockerfile: docker/python/Dockerfile
+      context: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "5000:5000"
+
+  mongo:
+    container_name: trendai_backend_mongo
+    image: mongo
+    volumes:
+      - mongo:/data/db
+
+volumes:
+  mongo:
+    driver: local
