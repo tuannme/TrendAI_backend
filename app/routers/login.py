@@ -27,9 +27,9 @@ def login():
         api = twitter.Api(consumer_key=app.config['TWITTER_CONSUMER_KEY'],
                           consumer_secret=app.config['TWITTER_CONSUMER_SECRET'],
                           access_token_key=request.json.get('access_token'),
-                          access_token_secret=request.json.get('access_token_secret'))
+                          access_token_secret=request.json.get('access_token_secret'), )
 
-        twitter_user = api.VerifyCredentials()
+        twitter_user = api.VerifyCredentials(include_email=True)
 
         if twitter_user is None:
             return jsonify({
@@ -38,11 +38,12 @@ def login():
             }), 401
 
         twitter_user_dict = twitter_user.AsDict()
-        external_user = ExternalUser(appId=app.config['TWITTER_CONSUMER_KEY'], userId=str(twitter_user_dict.get('id')))
+        external_user = ExternalUser(appId=app.config['TWITTER_CONSUMER_KEY'],
+                                     userId=str(twitter_user_dict.get('id')))
 
         user = User()
         user.name = twitter_user_dict.get('name')
-        # user.email = twitter_user_dict.get('email')
+        user.email = twitter_user_dict.get('email')
         user.createdAt = datetime.datetime.utcnow()
         user.externalUsers = [external_user]
         user.save()
