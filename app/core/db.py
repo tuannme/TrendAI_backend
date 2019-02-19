@@ -1,7 +1,7 @@
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
-from flask_pymongo import PyMongo
+from mongoengine import *
 
 
 def get_db():
@@ -10,8 +10,7 @@ def get_db():
     again.
     """
     if 'db' not in g:
-        mongo = PyMongo(current_app)
-        g.db = mongo.db
+        g.db = connect(current_app.config['APP_NAME'], host=current_app.config['MONGO_URI'])
 
     return g.db
 
