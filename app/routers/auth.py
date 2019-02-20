@@ -8,7 +8,7 @@ from mongoengine.errors import ValidationError
 bp = Blueprint('login', __name__)
 
 
-@bp.route('/login', methods=('GET', 'POST'))
+@bp.route('/login', methods=['POST'])
 def login():
     """Route login"""
 

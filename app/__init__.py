@@ -42,7 +42,7 @@ def create_app():
         return 'Do you see me?'
 
     # Register blueprints
-    from .routers import login
-    app.register_blueprint(login.bp)
+    from .routers import auth
+    app.register_blueprint(auth.bp, url_prefix='/auth')
 
     return app
