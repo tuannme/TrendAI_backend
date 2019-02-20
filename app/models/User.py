@@ -18,6 +18,11 @@ class User(Document):
         ]
     }
 
+    @staticmethod
+    def get_by_pk(pk):
+        """Get user by primary key"""
+        return User.objects.get(pk=pk)
+
     def response(self):
         """Get user's data for response"""
         return {
