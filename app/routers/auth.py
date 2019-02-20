@@ -15,15 +15,13 @@ def login():
     # Validate access_token
     if request.json.get('access_token') is None:
         return jsonify({
-            'error': True,
-            'message': 'Missing access_token'
+            'msg': 'Missing access_token'
         }), 522
 
     # Validate access_token_secret
     if request.json.get('access_token_secret') is None:
         return jsonify({
-            'error': True,
-            'message': 'Missing access_token_secret'
+            'msg': 'Missing access_token_secret'
         }), 522
 
     try:
@@ -39,8 +37,7 @@ def login():
         # Check credentials is valid
         if twitter_user is None:
             return jsonify({
-                'error': True,
-                'message': 'Invalid credentials'
+                'msg': 'Invalid credentials'
             }), 401
 
         # Get twitter user's data as dictionary
@@ -82,12 +79,10 @@ def login():
     except ValidationError as ex:
         app.logger.error('Mongo document validation error %s' % ex)
         return jsonify({
-            'error': True,
-            'message': 'Unauthorized'
+            'msg': 'Unauthorized'
         }), 401
     except error.TwitterError as ex:
         app.logger.error('Twitter authentication error %s' % ex)
         return jsonify({
-            'error': True,
-            'message': 'Unauthorized'
+            'msg': 'Unauthorized'
         }), 401
