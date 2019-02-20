@@ -1,6 +1,7 @@
 from flask import Flask
 from .core import db
 from logging.config import dictConfig
+from flask_jwt_extended import JWTManager
 
 def create_app():
     """Create Flask app
@@ -31,6 +32,9 @@ def create_app():
     with app.app_context():
         db.init_app(app)
         db.get_db()
+
+    # Init JWT
+    JWTManager(app)
 
     # Default route
     @app.route('/')

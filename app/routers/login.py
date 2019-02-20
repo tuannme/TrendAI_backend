@@ -73,13 +73,12 @@ def login():
             if found is False:
                 user.externalUsers.append(external_user)
 
-
         # Assign external user's data to internal user's data
         user.name = external_user_name
         user.email = external_user_email
         user.save()
 
-        return jsonify(user.response())
+        return jsonify(user.auth_response())
     except ValidationError as ex:
         app.logger.error('Mongo document validation error %s' % ex)
         return jsonify({

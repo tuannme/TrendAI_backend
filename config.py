@@ -1,6 +1,7 @@
 import os
 
 APP_NAME = os.getenv('APP_NAME', 'PythonApp')
+JWT_SECRET_KEY = APP_KEY = os.getenv('APP_KEY', 'secret')
 FLASK_DEBUG = os.getenv('FLASK_DEBUG', False)
 FLASK_ENV = os.getenv('FLASK_ENV', 'production')
 MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/trendAi')
