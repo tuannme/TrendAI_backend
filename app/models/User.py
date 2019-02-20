@@ -9,9 +9,19 @@ class User(Document):
     externalUsers = ListField(EmbeddedDocumentField(ExternalUser))
     createdAt = DateTimeField(default=datetime.datetime.utcnow)
 
-    meta={
+    meta = {
         'indexes': [
+            'email',
             'externalUsers.userId',
             'externalUsers.appId',
         ]
     }
+
+    def response(self):
+        """Get user's data for response"""
+        return {
+            'id': str(self.id),
+            'name': self.name,
+            'email': self.email,
+            'createdAt': self.createdAt
+        }

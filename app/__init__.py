@@ -30,6 +30,7 @@ def create_app():
     # Init database connection
     with app.app_context():
         db.init_app(app)
+        db.get_db()
 
     # Default route
     @app.route('/')

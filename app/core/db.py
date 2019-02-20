@@ -10,7 +10,7 @@ def get_db():
     again.
     """
     if 'db' not in g:
-        g.db = connect(current_app.config['APP_NAME'], host=current_app.config['MONGO_URI'])
+        g.db = connect(current_app.config['APP_NAME'], host=current_app.config['MONGO_URI'], alias='default')
 
     return g.db
 
