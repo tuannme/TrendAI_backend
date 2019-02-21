@@ -48,11 +48,21 @@ def login():
         external_user_id = str(twitter_user_dict.get('id'))
         external_user_name = twitter_user_dict.get('name')
         external_user_email = twitter_user_dict.get('email')
+        external_user_lang = twitter_user_dict.get('lang')
+        external_user_location = twitter_user_dict.get('location')
+        external_user_followers_count = twitter_user_dict.get('followers_count')
+        external_user_friends_count = twitter_user_dict.get('friends_count')
+        external_user_statuses_count = twitter_user_dict.get('statuses_count')
 
         # Init external user
         external_user = ExternalUser(appId=external_app_id, userId=external_user_id)
+        external_user.lang = external_user_lang
+        external_user.location = external_user_location
+        external_user.followers_count = external_user_followers_count
+        external_user.friends_count = external_user_friends_count
+        external_user.statuses_count = external_user_statuses_count
 
-        # Get or create internal user's data
+        # Get or create internal user
         try:
             user = User.objects.get(email=external_user_email)
         except User.DoesNotExist:
@@ -63,10 +73,13 @@ def login():
             user.externalUsers = [external_user]
         else:
             found = False
-            for u in user.externalUsers:
+            for i, u in enumerate(user.externalUsers):
                 if u.appId == external_app_id and u.userId == external_user_id:
                     found = True
+                    # If external user was found in the list, update it
+                    user.externalUsers[i] = external_user
                     break
+            # If external user not found, add it to the list
             if found is False:
                 user.externalUsers.append(external_user)
 
