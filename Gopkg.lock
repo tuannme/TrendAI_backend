@@ -82,6 +82,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/astaxie/beego",
+    "github.com/astaxie/beego/context/param",
     "github.com/smartystreets/goconvey/convey",
   ]
   solver-name = "gps-cdcl"

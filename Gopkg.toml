@@ -20,8 +20,8 @@
 #   version = "2.4.0"
 #
 # [prune]
-#   non-go = false
-#   go-tests = true
+#   non-app = false
+#   app-tests = true
 #   unused-packages = true
 
 
