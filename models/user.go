@@ -1,86 +1,33 @@
 package models
 
 import (
-	"errors"
-	"strconv"
+	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
-var (
-	UserList map[string]*User
-)
+var userCollection *mgo.Collection
 
 func init() {
-	UserList = make(map[string]*User)
-	u := User{"user_11111", "astaxie", "11111", Profile{"male", 20, "Singapore", "astaxie@gmail.com"}}
-	UserList["user_11111"] = &u
+	userCollection = databases.GetMongoCollection("user")
+}
+
+func GetUserCollection() *mgo.Collection {
+	return userCollection
 }
 
 type User struct {
-	Id       string
-	Username string
-	Password string
-	Profile  Profile
+	Id            bson.ObjectId  `json:"id,omitempty" bson:"_id,omitempty"`
+	Name          string         `json:"name" bson:"name"`
+	Email         string         `json:"email" bson:"email"`
+	ExternalUsers []ExternalUser `json:"external_users" bson:"external_users"`
+	CreatedAt     time.Time      `json:"created_at" bson:"created_at"`
 }
 
-type Profile struct {
-	Gender  string
-	Age     int
-	Address string
-	Email   string
-}
-
-func AddUser(u User) string {
-	u.Id = "user_" + strconv.FormatInt(time.Now().UnixNano(), 10)
-	UserList[u.Id] = &u
-	return u.Id
-}
-
-func GetUser(uid string) (u *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		return u, nil
-	}
-	return nil, errors.New("User not exists")
-}
-
-func GetAllUsers() map[string]*User {
-	return UserList
-}
-
-func UpdateUser(uid string, uu *User) (a *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		if uu.Username != "" {
-			u.Username = uu.Username
-		}
-		if uu.Password != "" {
-			u.Password = uu.Password
-		}
-		if uu.Profile.Age != 0 {
-			u.Profile.Age = uu.Profile.Age
-		}
-		if uu.Profile.Address != "" {
-			u.Profile.Address = uu.Profile.Address
-		}
-		if uu.Profile.Gender != "" {
-			u.Profile.Gender = uu.Profile.Gender
-		}
-		if uu.Profile.Email != "" {
-			u.Profile.Email = uu.Profile.Email
-		}
-		return u, nil
-	}
-	return nil, errors.New("User Not Exist")
-}
-
-func Login(username, password string) bool {
-	for _, u := range UserList {
-		if u.Username == username && u.Password == password {
-			return true
-		}
-	}
-	return false
-}
-
-func DeleteUser(uid string) {
-	delete(UserList, uid)
+type ExternalUser struct {
+	AppId           string    `json:"app_id" bson:"app_id"`
+	UserId          string    `json:"user_id" bson:"user_id"`
+	LastConnectedAt time.Time `json:"last_connected_at" bson:"last_connected_at"`
+	CreatedAt       time.Time `json:"created_at" bson:"created_at"`
 }
