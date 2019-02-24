@@ -9,18 +9,15 @@ package routers
 
 import (
 	"github.com/trend-ai/TrendAI_mobile_backend/controllers"
+	"github.com/trend-ai/TrendAI_mobile_backend/services/authentications"
 
 	"github.com/astaxie/beego"
 )
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
-			beego.NSInclude(
-				&controllers.ObjectController{},
-			),
-		),
 		beego.NSNamespace("/user",
+			beego.NSBefore(authentications.JwtAuthenticationFilter()),
 			beego.NSInclude(
 				&controllers.UserController{},
 			),
