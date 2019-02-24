@@ -8,6 +8,7 @@ import (
 	"github.com/dghubble/oauth1"
 	"github.com/trend-ai/TrendAI_mobile_backend/conf"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
+	"github.com/trend-ai/TrendAI_mobile_backend/services/authentications"
 	"gopkg.in/mgo.v2/bson"
 	"strconv"
 )
@@ -106,16 +107,27 @@ func (o *AuthController) Login() {
 	if user.Id.Valid() {
 		err = models.GetUserCollection().UpdateId(user.Id, user)
 	} else {
+		user.Id = bson.NewObjectId()
 		err = models.GetUserCollection().Insert(user)
 	}
 
 	// If saving fail, then response error
 	if err != nil {
-		logs.Error("Couldn't update user", err, user.Id)
+		logs.Error("Couldn't update user", err)
 		o.Ctx.Output.SetStatus(401)
 		res = models.NewResponseWithError("unauthorized", "Unauthorized")
 		return
 	}
 
-	res = user
+	// Generate authentication to for current user
+	authenticationToken, err := authentications.GenerateAuthenticationTokenByUser(user)
+	if err != nil {
+		logs.Error("Couldn't generate authentication token", err)
+		o.Ctx.Output.SetStatus(401)
+		res = models.NewResponseWithError("unauthorized", "Unauthorized")
+		return
+	}
+
+	// Respond authentication data
+	res = user.ToAuthenticationResponse(*authenticationToken)
 }

@@ -52,6 +52,14 @@
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   digest = "1:a63cff6b5d8b95638bfe300385d93b2a6d9d687734b863da8e09dc834510a690"
   name = "github.com/google/go-querystring"
   packages = ["query"]
@@ -148,9 +156,11 @@
     "github.com/astaxie/beego/logs",
     "github.com/dghubble/go-twitter/twitter",
     "github.com/dghubble/oauth1",
+    "github.com/dgrijalva/jwt-go",
     "github.com/joho/godotenv",
     "github.com/smartystreets/goconvey/convey",
     "gopkg.in/mgo.v2",
+    "gopkg.in/mgo.v2/bson",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
