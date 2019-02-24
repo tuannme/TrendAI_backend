@@ -25,4 +25,13 @@ func init() {
 			Filters:          nil,
 			Params:           nil})
 
+	beego.GlobalControllerRouter["github.com/trend-ai/TrendAI_mobile_backend/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/trend-ai/TrendAI_mobile_backend/controllers:UserController"],
+		beego.ControllerComments{
+			Method:           "Patch",
+			Router:           `/`,
+			AllowHTTPMethods: []string{"patch"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
 }

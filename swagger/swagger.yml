@@ -50,6 +50,18 @@ paths:
             $ref: '#/definitions/models.UserResponse'
         "401":
           description: '{object} models.ResponseWithError'
+    patch:
+      tags:
+      - user
+      description: Update specific fields for current user
+      operationId: UserController.Patch
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: '{object} models.ResponseWithError'
 definitions:
   bson.ObjectId:
     title: ObjectId
