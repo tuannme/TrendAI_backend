@@ -13,7 +13,7 @@ Follow bellow steps to setup your application:
 ## Run application
 
 To run application, please go inside project directory and run `docker-compose up`.
-Your application located at [http://localhost:5000](http://localhost:8080). 
+Your application located at [http://localhost:8080](http://localhost:8080). 
 
 ## APIs
 ### Login [POST /auth/login]
