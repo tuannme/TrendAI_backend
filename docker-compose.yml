@@ -7,8 +7,8 @@ services:
       dockerfile: docker/app/Dockerfile
       context: .
     volumes:
-      - .:/src/github.com/trend-ai/TrendAI_mobile_backend
-      - /src/github.com/trend-ai/TrendAI_mobile_backend/vendor
+      - .:/go/src/github.com/trend-ai/TrendAI_mobile_backend
+      - /go/src/github.com/trend-ai/TrendAI_mobile_backend/vendor
     ports:
       - "8080:8080"
 

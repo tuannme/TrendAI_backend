@@ -12,8 +12,10 @@ COPY Gopkg.toml Gopkg.lock ./
 RUN dep ensure --vendor-only
 COPY . ./
 
-# Run application in development mode
-CMD go run main.go
+# Install gin for live-reloading Go app
+RUN go get github.com/githubnemo/CompileDaemon
+ENV CGO_ENABLED=0
+ENTRYPOINT CompileDaemon -exclude-dir=.git -exclude-dir=.idea -build="go build -a -installsuffix nocgo -o /app ." -command="/app"
 
 # Use for build production
 # RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /app .
