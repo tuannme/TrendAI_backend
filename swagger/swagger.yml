@@ -1,0 +1,89 @@
+swagger: "2.0"
+info:
+  title: TrendAI Backend APIs
+  description: APIs document for TrendAI Backend app
+  version: 1.0.0
+  termsOfService: http://beego.me/
+  contact:
+    email: zenthangplus@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /v1
+paths:
+  /auth/login:
+    post:
+      tags:
+      - auth
+      description: Login API
+      operationId: AuthController.Login
+      parameters:
+      - in: body
+        name: access_token
+        description: Twitter access token
+        required: true
+        type: string
+      - in: body
+        name: access_token_secret
+        description: Twitter access token secret
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.AuthenticationResponse'
+        "400":
+          description: '{object} models.ResponseWithError'
+        "401":
+          description: '{object} models.ResponseWithError'
+  /user/:
+    get:
+      tags:
+      - user
+      description: Get current user
+      operationId: UserController.Get
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "401":
+          description: '{object} models.ResponseWithError'
+definitions:
+  bson.ObjectId:
+    title: ObjectId
+    type: object
+  models.AuthenticationResponse:
+    title: AuthenticationResponse
+    type: object
+    properties:
+      token:
+        $ref: '#/definitions/models.AuthenticationToken'
+      user:
+        $ref: '#/definitions/models.UserResponse'
+  models.AuthenticationToken:
+    title: AuthenticationToken
+    type: object
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+  models.UserResponse:
+    title: UserResponse
+    type: object
+    properties:
+      created_at:
+        type: string
+        format: datetime
+      email:
+        type: string
+      id:
+        $ref: '#/definitions/bson.ObjectId'
+      name:
+        type: string
+tags:
+- name: user
+  description: |
+    Operations about Users

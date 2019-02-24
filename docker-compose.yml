@@ -8,7 +8,6 @@ services:
       context: .
     volumes:
       - .:/go/src/github.com/trend-ai/TrendAI_mobile_backend
-      - /go/src/github.com/trend-ai/TrendAI_mobile_backend/vendor
     ports:
       - "8080:8080"
 

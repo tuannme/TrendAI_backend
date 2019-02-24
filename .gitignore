@@ -25,3 +25,5 @@ lastupdate.tmp
 /vendor/
 /Godeps/
 
+### Build file ###
+TrendAI_mobile_backend
