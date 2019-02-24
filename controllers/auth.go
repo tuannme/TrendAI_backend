@@ -10,6 +10,7 @@ import (
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/authentications"
 	"gopkg.in/mgo.v2/bson"
+	"net/http"
 	"strconv"
 )
 
@@ -21,8 +22,9 @@ type AuthController struct {
 // @Description Login API
 // @Param	access_token	body	string	true	"Twitter access token"
 // @Param	access_token_secret	body	string	true	"Twitter access token secret"
-// @Success 200 {int} models.User.Id
-// @Failure 403 body is empty
+// @Success 200 {object} models.AuthenticationResponse
+// @Failure 400 {object} models.ResponseWithError
+// @Failure 401 {object} models.ResponseWithError
 // @router /login [post]
 func (o *AuthController) Login() {
 	var res models.Response
@@ -39,8 +41,8 @@ func (o *AuthController) Login() {
 	err := json.Unmarshal(o.Ctx.Input.RequestBody, &packet)
 	if err != nil {
 		logs.Error("Parse request error", err)
-		o.Ctx.Output.SetStatus(522)
-		res = err.Error()
+		o.Ctx.Output.SetStatus(http.StatusBadRequest)
+		res = models.NewResponseWithError("unauthorized", "Couldn't parse your request")
 		return
 	}
 
@@ -59,7 +61,7 @@ func (o *AuthController) Login() {
 	})
 	if err != nil {
 		logs.Error("Authentication failed:", err.Error())
-		o.Ctx.Output.SetStatus(401)
+		o.Ctx.Output.SetStatus(http.StatusUnauthorized)
 		res = models.NewResponseWithError("unauthorized", "Could't validate your credentials")
 		return
 	}
@@ -114,7 +116,7 @@ func (o *AuthController) Login() {
 	// If saving fail, then response error
 	if err != nil {
 		logs.Error("Couldn't update user", err)
-		o.Ctx.Output.SetStatus(401)
+		o.Ctx.Output.SetStatus(http.StatusUnauthorized)
 		res = models.NewResponseWithError("unauthorized", "Unauthorized")
 		return
 	}
@@ -123,7 +125,7 @@ func (o *AuthController) Login() {
 	authenticationToken, err := authentications.GenerateAuthenticationTokenByUser(user)
 	if err != nil {
 		logs.Error("Couldn't generate authentication token", err)
-		o.Ctx.Output.SetStatus(401)
+		o.Ctx.Output.SetStatus(http.StatusUnauthorized)
 		res = models.NewResponseWithError("unauthorized", "Unauthorized")
 		return
 	}
