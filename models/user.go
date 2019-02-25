@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -15,6 +16,16 @@ func init() {
 
 func GetUserCollection() *mgo.Collection {
 	return userCollection
+}
+
+const (
+	UserGenderMale   = 0
+	UserGenderFemale = 1
+)
+
+var UserGenders = map[int]string{
+	UserGenderMale:   "male",
+	UserGenderFemale: "female",
 }
 
 type User struct {
@@ -35,40 +46,45 @@ type ExternalUser struct {
 	CreatedAt       time.Time `json:"created_at" bson:"created_at"`
 }
 
-type AuthenticationToken struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
 type UserResponse struct {
 	Id        bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	Name      string        `json:"name"`
 	Email     string        `json:"email"`
+	Gender    string        `json:"gender"`
+	Dob       time.Time     `json:"dob"`
+	Education string        `json:"education"`
 	CreatedAt time.Time     `json:"created_at"`
 }
 
-type AuthenticationResponse struct {
-	User  UserResponse        `json:"user"`
-	Token AuthenticationToken `json:"token"`
-}
-
+// Get response data for current user
 func (u *User) ToResponse() UserResponse {
+	gender, _ := UserGenderToStr(u.Gender)
 	return UserResponse{
 		Id:        u.Id,
 		Name:      u.Name,
 		Email:     u.Email,
+		Gender:    gender,
+		Dob:       u.Dob,
+		Education: u.Education,
 		CreatedAt: u.CreatedAt,
 	}
 }
 
-func (u *User) ToAuthenticationResponse(token AuthenticationToken) AuthenticationResponse {
-	return AuthenticationResponse{
-		User: UserResponse{
-			Id:        u.Id,
-			Name:      u.Name,
-			Email:     u.Email,
-			CreatedAt: u.CreatedAt,
-		},
-		Token: token,
+// Convert gender in int to string
+func UserGenderToStr(gender int) (string, error) {
+	val, exists := UserGenders[gender]
+	if !exists {
+		return "", errors.New("gender doesn't exists")
 	}
+	return val, nil
+}
+
+// Convert gender in string to int
+func UserGenderToInt(gender string) (int, error) {
+	for k, v := range UserGenders {
+		if v == gender {
+			return k, nil
+		}
+	}
+	return 0, errors.New("gender doesn't exists")
 }

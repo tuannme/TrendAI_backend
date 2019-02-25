@@ -88,6 +88,9 @@
                     },
                     "400": {
                         "description": "{object} models.ResponseWithError"
+                    },
+                    "500": {
+                        "description": "{object} models.ResponseWithError"
                     }
                 }
             }
@@ -130,7 +133,17 @@
                     "type": "string",
                     "format": "datetime"
                 },
+                "dob": {
+                    "type": "string",
+                    "format": "datetime"
+                },
+                "education": {
+                    "type": "string"
+                },
                 "email": {
+                    "type": "string"
+                },
+                "gender": {
                     "type": "string"
                 },
                 "id": {

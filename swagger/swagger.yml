@@ -62,6 +62,8 @@ paths:
             $ref: '#/definitions/models.UserResponse'
         "400":
           description: '{object} models.ResponseWithError'
+        "500":
+          description: '{object} models.ResponseWithError'
 definitions:
   bson.ObjectId:
     title: ObjectId
@@ -89,7 +91,14 @@ definitions:
       created_at:
         type: string
         format: datetime
+      dob:
+        type: string
+        format: datetime
+      education:
+        type: string
       email:
+        type: string
+      gender:
         type: string
       id:
         $ref: '#/definitions/bson.ObjectId'
