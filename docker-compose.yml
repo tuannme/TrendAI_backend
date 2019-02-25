@@ -4,12 +4,12 @@ services:
   app:
     container_name: trendai_backend_app
     build:
-      dockerfile: docker/python/Dockerfile
+      dockerfile: docker/app/Dockerfile
       context: .
     volumes:
-      - .:/usr/src/app
+      - .:/go/src/github.com/trend-ai/TrendAI_mobile_backend
     ports:
-      - "5000:5000"
+      - "8080:8080"
 
   mongo:
     container_name: trendai_backend_mongo

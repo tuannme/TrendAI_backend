@@ -13,7 +13,7 @@ Follow bellow steps to setup your application:
 ## Run application
 
 To run application, please go inside project directory and run `docker-compose up`.
-Your application located at [http://localhost:5000](http://localhost:5000). 
+Your application located at [http://localhost:8080](http://localhost:8080). 
 
 ## APIs
 ### Login [POST /auth/login]
@@ -30,50 +30,54 @@ Use this API for authentication.
 
         {
             "user": {
-                "id": "5c6d46f239da8e004593373c",
+                "id": "5c7285d05d40e0d4bfb7ede5",
                 "name": "Bui Thang",
                 "email": "zenthangplus@gmail.com",
-                "createdAt": "Wed, 20 Feb 2019 12:24:17 GMT"
+                "created_at": "2019-02-24T11:53:52.155Z"
             },
             "token": {
-                "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NTA2ODAyNDYsIm5iZiI6MTU1MDY4MDI0NiwianRpIjoiNGU0OGRhOTUtZDEyMS00MmViLWE4MWQtNGE4YmUzNzQ1NDNkIiwiZXhwIjoxNTUwNjgxMTQ2LCJpZGVudGl0eSI6IjVjNmQ0NmYyMzlkYThlMDA0NTkzMzczYyIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.qAuvOPCQVr3YAFuD6B4RmqLmEokv-05ttL8BzPRBAug"
+                "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTE2MzE0MjUsInVpZCI6IjVjNzI4NWQwNWQ0MGUwZDRiZmI3ZWRlNSJ9.n3ALesfOg7gzBiYjETdsPrLP7K9fwaNja8teFAkXqVg",
+                "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWYiOiJyZWZyZXNoIiwidWlkIjoiNWM3Mjg1ZDA1ZDQwZTBkNGJmYjdlZGU1In0.EPbAA5QF-dy8nEItbUshzcnRd368WLGw7-d1lIzQ3j8"
             }
         }
 
 + Response 401 (application/json)
 
         {
-            "msg": "Unauthorized"
+            "code": "unauthorized",
+            "message": "Unauthorized"
         }
 
-+ Response 522 (application/json)
++ Response 400 (application/json)
 
         {
-            "msg": "Missing access_token"
+            "code": "unauthorized",
+            "message": "Couldn't parse your request"
         }
 
 ### Get user [GET /user]
 
-In order to authenticate a user, please add this header ``Authorization: {access_token}`` to your request.
+In order to authenticate a user, please add this header ``Authorization: Bearer {access_token}`` to your request.
 
 + Request (application/json)
 
     + Headers
         
-            Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NTA2ODAyNDYsIm5iZiI6MTU1MDY4MDI0NiwianRpIjoiNGU0OGRhOTUtZDEyMS00MmViLWE4MWQtNGE4YmUzNzQ1NDNkIiwiZXhwIjoxNTUwNjgxMTQ2LCJpZGVudGl0eSI6IjVjNmQ0NmYyMzlkYThlMDA0NTkzMzczYyIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.qAuvOPCQVr3YAFuD6B4RmqLmEokv-05ttL8BzPRBAug
+            Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NTA2ODAyNDYsIm5iZiI6MTU1MDY4MDI0NiwianRpIjoiNGU0OGRhOTUtZDEyMS00MmViLWE4MWQtNGE4YmUzNzQ1NDNkIiwiZXhwIjoxNTUwNjgxMTQ2LCJpZGVudGl0eSI6IjVjNmQ0NmYyMzlkYThlMDA0NTkzMzczYyIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.qAuvOPCQVr3YAFuD6B4RmqLmEokv-05ttL8BzPRBAug
             
 
 + Response 200 (application/json)
 
         {
-            "id": "5c6d46f239da8e004593373c",
-            "name": "Bui Thang",
+            "id": "5c7285d05d40e0d4bfb7ede5",
+            "name": "Bui Xuan Thang",
             "email": "zenthangplus@gmail.com",
-            "createdAt": "Wed, 20 Feb 2019 12:24:17 GMT"
+            "created_at": "2019-02-24T11:53:52.155Z"
         }
 
 + Response 401 (application/json)
 
         {
-            "msg": "Unauthorized"
+            "code": "unauthorized",
+            "message": "Unauthorized"
         }
