@@ -9,7 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/trend-ai/TrendAI_mobile_backend/conf"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
 	"net/http"
 	"time"
 )
@@ -27,7 +27,6 @@ func GenerateAuthenticationTokenByUser(user models.User) (*models.Authentication
 	claims["exp"] = expTime.Unix()
 	claims["uid"] = user.Id
 	accessToken.Claims = claims
-	logs.Debug("key: ", conf.Get().AppKey)
 	accessTokenStr, err := accessToken.SignedString(hmacSecret)
 	if err != nil {
 		return nil, err
@@ -86,17 +85,28 @@ func JwtAuthenticationFilter() beego.FilterFunc {
 
 		// Get user from our database
 		userId := fmt.Sprintf("%v", uid)
-		var user models.User
 		userCollection := models.GetUserCollection()
-		err = userCollection.FindId(bson.ObjectIdHex(userId)).One(&user)
+		userSnapshot, err := userCollection.Doc(userId).Get(databases.Context)
 
 		// Account doesn't exists
 		if err != nil {
-			logs.Debug("userId", userId, err)
 			ctx.Output.SetStatus(http.StatusUnauthorized)
 			_ = ctx.Output.JSON(models.NewResponseWithError("unauthorized", "User is not exists"), hasIndent, false)
 			return
 		}
+
+		// Cast user data to user struct
+		var user models.User
+		err = userSnapshot.DataTo(&user)
+		if err != nil {
+			logs.Debug("Parse user data failed", err)
+			ctx.Output.SetStatus(http.StatusUnauthorized)
+			_ = ctx.Output.JSON(models.NewResponseWithError("unauthorized", "User is not exists"), hasIndent, false)
+			return
+		}
+
+		// Get user id
+		user.Id = userSnapshot.Ref.ID
 
 		// Check if token was expired
 		if int64(exp.(float64)) < time.Now().Unix() {

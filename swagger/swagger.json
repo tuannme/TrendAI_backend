@@ -97,10 +97,6 @@
         }
     },
     "definitions": {
-        "bson.ObjectId": {
-            "title": "ObjectId",
-            "type": "object"
-        },
         "models.AuthenticationResponse": {
             "title": "AuthenticationResponse",
             "type": "object",
@@ -147,7 +143,7 @@
                     "type": "string"
                 },
                 "id": {
-                    "$ref": "#/definitions/bson.ObjectId"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

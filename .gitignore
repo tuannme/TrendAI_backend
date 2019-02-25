@@ -27,3 +27,5 @@ lastupdate.tmp
 
 ### Build file ###
 TrendAI_mobile_backend
+
+conf/service_account.json

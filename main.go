@@ -8,8 +8,13 @@ import (
 )
 
 func main() {
-	// Close database connection when stop main function
-	defer databases.GetMongoSession().Close()
+	// Get firestore client
+	firestoreClient := databases.GetFirestoreClient()
+
+	// Close firestore connection when main function stopped
+	defer func() {
+		_ = firestoreClient.Close()
+	}()
 
 	// Beego config
 	if beego.BConfig.RunMode == "dev" {
