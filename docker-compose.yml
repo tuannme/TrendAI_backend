@@ -10,13 +10,3 @@ services:
       - .:/go/src/github.com/trend-ai/TrendAI_mobile_backend
     ports:
       - "8080:8080"
-
-  mongo:
-    container_name: trendai_backend_mongo
-    image: mongo
-    volumes:
-      - mongo:/data/db
-
-volumes:
-  mongo:
-    driver: local

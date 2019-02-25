@@ -27,6 +27,11 @@ func init() {
 				&controllers.AuthController{},
 			),
 		),
+		beego.NSNamespace("/admin",
+			beego.NSInclude(
+				&controllers.AdminController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

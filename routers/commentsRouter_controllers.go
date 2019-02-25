@@ -7,6 +7,15 @@ import (
 
 func init() {
 
+	beego.GlobalControllerRouter["github.com/trend-ai/TrendAI_mobile_backend/controllers:AdminController"] = append(beego.GlobalControllerRouter["github.com/trend-ai/TrendAI_mobile_backend/controllers:AdminController"],
+		beego.ControllerComments{
+			Method:           "PushInterestCategories",
+			Router:           `/interest_categories`,
+			AllowHTTPMethods: []string{"put"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
 	beego.GlobalControllerRouter["github.com/trend-ai/TrendAI_mobile_backend/controllers:AuthController"] = append(beego.GlobalControllerRouter["github.com/trend-ai/TrendAI_mobile_backend/controllers:AuthController"],
 		beego.ControllerComments{
 			Method:           "Login",

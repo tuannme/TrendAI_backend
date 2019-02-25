@@ -15,6 +15,26 @@
     },
     "basePath": "/v1",
     "paths": {
+        "/admin/interest_categories": {
+            "put": {
+                "tags": [
+                    "admin"
+                ],
+                "description": "Push interest categories to database",
+                "operationId": "AdminController.PushInterestCategories",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.AuthenticationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "{object} models.ResponseWithError"
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "tags": [
@@ -97,10 +117,6 @@
         }
     },
     "definitions": {
-        "bson.ObjectId": {
-            "title": "ObjectId",
-            "type": "object"
-        },
         "models.AuthenticationResponse": {
             "title": "AuthenticationResponse",
             "type": "object",
@@ -147,7 +163,7 @@
                     "type": "string"
                 },
                 "id": {
-                    "$ref": "#/definitions/bson.ObjectId"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

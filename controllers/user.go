@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
+	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
 	"net/http"
 	"time"
 )
@@ -90,9 +91,11 @@ func (o *UserController) Patch() {
 		user.Education = packet.Education
 	}
 
+	ctx := databases.Context
 	// Save data
 	userCollection := models.GetUserCollection()
-	err := userCollection.UpdateId(user.Id, user)
+	userRef := userCollection.Doc(user.Id)
+	_, err := userRef.Set(ctx, user)
 	if err != nil {
 		logs.Error("Couldn't update user:", err)
 		o.Ctx.Output.SetStatus(http.StatusInternalServerError)

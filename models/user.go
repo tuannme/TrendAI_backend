@@ -1,20 +1,19 @@
 package models
 
 import (
+	"cloud.google.com/go/firestore"
 	"errors"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
-var userCollection *mgo.Collection
+var userCollection *firestore.CollectionRef
 
 func init() {
-	userCollection = databases.GetMongoCollection("user")
+	userCollection = databases.GetFirestoreCollection("user")
 }
 
-func GetUserCollection() *mgo.Collection {
+func GetUserCollection() *firestore.CollectionRef {
 	return userCollection
 }
 
@@ -29,31 +28,31 @@ var UserGenders = map[int]string{
 }
 
 type User struct {
-	Id            bson.ObjectId  `json:"id,omitempty" bson:"_id,omitempty"`
-	Name          string         `json:"name" bson:"name"`
-	Email         string         `json:"email" bson:"email"`
-	Gender        int            `json:"gender" bson:"gender"`
-	Dob           time.Time      `json:"dob" bson:"dob"`
-	Education     string         `json:"education" bson:"education"`
-	ExternalUsers []ExternalUser `json:"external_users" bson:"external_users"`
-	CreatedAt     time.Time      `json:"created_at" bson:"created_at"`
+	Id            string         `json:"id,omitempty" firestore:"-"`
+	Name          string         `json:"name" firestore:"name"`
+	Email         string         `json:"email" firestore:"email"`
+	Gender        int            `json:"gender" firestore:"gender"`
+	Dob           time.Time      `json:"dob" firestore:"dob"`
+	Education     string         `json:"education" firestore:"education"`
+	ExternalUsers []ExternalUser `json:"external_users" firestore:"external_users"`
+	CreatedAt     time.Time      `json:"created_at" firestore:"created_at"`
 }
 
 type ExternalUser struct {
-	AppId           string    `json:"app_id" bson:"app_id"`
-	UserId          string    `json:"user_id" bson:"user_id"`
-	LastConnectedAt time.Time `json:"last_connected_at" bson:"last_connected_at"`
-	CreatedAt       time.Time `json:"created_at" bson:"created_at"`
+	AppId           string    `json:"app_id" firestore:"app_id"`
+	UserId          string    `json:"user_id" firestore:"user_id"`
+	LastConnectedAt time.Time `json:"last_connected_at" firestore:"last_connected_at"`
+	CreatedAt       time.Time `json:"created_at" firestore:"created_at"`
 }
 
 type UserResponse struct {
-	Id        bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
-	Name      string        `json:"name"`
-	Email     string        `json:"email"`
-	Gender    string        `json:"gender"`
-	Dob       time.Time     `json:"dob"`
-	Education string        `json:"education"`
-	CreatedAt time.Time     `json:"created_at"`
+	Id        string    `json:"id,omitempty"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
+	Gender    string    `json:"gender"`
+	Dob       time.Time `json:"dob"`
+	Education string    `json:"education"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // Get response data for current user
