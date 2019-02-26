@@ -77,6 +77,21 @@ paths:
           description: '{object} models.ResponseWithError'
         "500":
           description: '{object} models.ResponseWithError'
+  /user/categories:
+    get:
+      tags:
+      - user
+      description: Get all categories available
+      operationId: UserController.GetCategories
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.Category'
+        "500":
+          description: '{object} models.ResponseWithError'
 definitions:
   models.AuthenticationResponse:
     title: AuthenticationResponse
@@ -94,6 +109,33 @@ definitions:
         type: string
       refresh_token:
         type: string
+  models.BaseCategory:
+    title: BaseCategory
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      slug:
+        type: string
+  models.Category:
+    title: Category
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      slug:
+        type: string
+      sub_categories:
+        type: array
+        items:
+          $ref: '#/definitions/models.SubCategory'
+  models.SubCategory:
+    title: SubCategory
+    type: object
   models.UserResponse:
     title: UserResponse
     type: object

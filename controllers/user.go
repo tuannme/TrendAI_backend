@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
+	"google.golang.org/api/iterator"
 	"net/http"
 	"time"
 )
@@ -104,4 +105,72 @@ func (o *UserController) Patch() {
 	}
 
 	res = user.ToResponse()
+}
+
+// @Title GetCategories
+// @Description Get all categories available
+// @Success 200 {object} []models.Category
+// @Failure 500 {object} models.ResponseWithError
+// @router /categories [get]
+func (o *UserController) GetCategories() {
+	var res models.Response
+	defer func() {
+		o.Data["json"] = res
+		o.ServeJSON()
+	}()
+
+	var err error
+	categories := make([]models.Category, 0)
+	categoryCollection := models.GetCategoryCollection()
+
+	// Get all categories in database
+	categoryIterator := categoryCollection.Documents(databases.Context)
+	defer categoryIterator.Stop()
+	for {
+		catSnapshot, err := categoryIterator.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			logs.Error("Loop categories error:", err)
+			break
+		}
+		var cat models.Category
+		err = catSnapshot.DataTo(&cat)
+		if err != nil {
+			logs.Error("Cast category to struct error:", err)
+			break
+		}
+
+		// Get all sub categories snapshot
+		subSnapshots, err := catSnapshot.Ref.Collection("sub_categories").Documents(databases.Context).GetAll()
+		if err != nil {
+			logs.Error("Get sub categories error:", err)
+			break
+		}
+
+		// Loop thru all sub snapshots to get all sub category
+		for _, subSnap := range subSnapshots {
+			var sub models.SubCategory
+			err = subSnap.DataTo(&sub)
+			if err != nil {
+				logs.Error("Cast sub categories to struct error:", err)
+				break
+			}
+			sub.Id = subSnap.Ref.ID
+			cat.SubCategories = append(cat.SubCategories, sub)
+		}
+
+		cat.Id = catSnapshot.Ref.ID
+		categories = append(categories, cat)
+	}
+
+	// Respond error message if have any errors
+	if err != nil {
+		o.Ctx.Output.SetStatus(http.StatusInternalServerError)
+		res = models.NewResponseWithError("get_failed", "Couldn't get list categories")
+		return
+	}
+
+	res = categories
 }
