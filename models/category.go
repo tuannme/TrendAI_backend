@@ -28,43 +28,6 @@ type Category struct {
 	SubCategories []SubCategory `json:"sub_categories" firestore:"sub_categories"`
 }
 
-//
-//subMusic := []string{"Pop", "Hip-hop/Rap", "Country", "Latino Music", "R&B Soul", "Classic Rock", "Dance/electronic",
-//	"Metal", "Rock/Alt", "Indie/Experimental",}
-//
-//subEntertainment := []string{"Industry News", "Digital Creators", "Movies", "Music", "Television", "Pop Culture",
-//	"Style", "Arts", "Books",}
-//
-
-//subArts := []string{"Design & Architecture", "Literature", "Photography", "Art", "Interesting Pictures",}
-//
-//subGovernment := []string{"Gov Officials & Agencies",}
-//
-//subGame := []string{"Celebrity Gamer", "Games", "Gaming News", "eSport",}
-//
-//subNonprofits := []string{"Humanitarian",}
-//
-//subFun := []string{"Trending", "Amazing", "Cute", "Haha", "Weird", "Holidays", "Animals", "Memes", "Humor",}
-//
-//subScience := []string{"Science News", "Space News",}
-//
-//subTechnology := []string{"Technology Professionals & Reporters", "Teach News",}
-//
-//titles := []string{
-//	"News",
-//	"Lifestyle",
-//	"Entertainment",
-//	"Fun",
-//	"Music",
-//	"Technology",
-//	"Government & Polytics",
-//	"Science",
-//	"Arts & Culture",
-//	"Nonprofits",
-//	"Sports",
-//	"Gaming",
-//}
-
 var categories = []Category{
 	{
 		BaseCategory: BaseCategory{
@@ -151,6 +114,250 @@ var categories = []Category{
 			{
 				Name: "Food",
 				Slug: "food",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Entertainment",
+			Slug: "entertainment",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Industry News",
+				Slug: "industry-news",
+			},
+			{
+				Name: "Digital Creators",
+				Slug: "digital-creators",
+			},
+			{
+				Name: "Movies",
+				Slug: "movies",
+			},
+			{
+				Name: "Music",
+				Slug: "music",
+			},
+			{
+				Name: "Television",
+				Slug: "television",
+			},
+			{
+				Name: "Pop Culture",
+				Slug: "pop-culture",
+			},
+			{
+				Name: "Style",
+				Slug: "style",
+			},
+			{
+				Name: "Arts",
+				Slug: "arts",
+			},
+			{
+				Name: "Books",
+				Slug: "books",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Fun",
+			Slug: "fun",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Trending",
+				Slug: "trending",
+			},
+			{
+				Name: "Amazing",
+				Slug: "amazing",
+			},
+			{
+				Name: "Cute",
+				Slug: "cute",
+			},
+			{
+				Name: "Haha",
+				Slug: "haha",
+			},
+			{
+				Name: "Weird",
+				Slug: "weird",
+			},
+			{
+				Name: "Holidays",
+				Slug: "holidays",
+			},
+			{
+				Name: "Animals",
+				Slug: "animals",
+			},
+			{
+				Name: "Memes",
+				Slug: "memes",
+			},
+			{
+				Name: "Humor",
+				Slug: "humor",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Music",
+			Slug: "music",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Pop",
+				Slug: "pop",
+			},
+			{
+				Name: "Hip-hop/Rap",
+				Slug: "hip-hop-rap",
+			},
+			{
+				Name: "Country",
+				Slug: "country",
+			},
+			{
+				Name: "Latino Music",
+				Slug: "latino-music",
+			},
+			{
+				Name: "R&B Soul",
+				Slug: "r-and-b-soul",
+			},
+			{
+				Name: "Classic Rock",
+				Slug: "classic-rock",
+			},
+			{
+				Name: "Dance/electronic",
+				Slug: "dance/electronic",
+			},
+			{
+				Name: "Metal",
+				Slug: "metal",
+			},
+			{
+				Name: "Rock/Alt",
+				Slug: "rock-alt",
+			},
+			{
+				Name: "Indie/Experimental",
+				Slug: "indie-experimental",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Technology",
+			Slug: "technology",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Technology Professionals & Reporters",
+				Slug: "technology-professionals-and-reporters",
+			},
+			{
+				Name: "Teach News",
+				Slug: "teach-news",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Government & Polytics",
+			Slug: "government-and-polytics",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Gov Officials & Agencies",
+				Slug: "gov-officials-and-agencies",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Science",
+			Slug: "science",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Science News",
+				Slug: "science-sews",
+			},
+			{
+				Name: "Space News",
+				Slug: "space-sews",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Arts & Culture",
+			Slug: "arts-and-culture",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Design & Architecture",
+				Slug: "design-and-architecture",
+			},
+			{
+				Name: "Literature",
+				Slug: "literature",
+			},
+			{
+				Name: "Photography",
+				Slug: "photography",
+			},
+			{
+				Name: "Art",
+				Slug: "art",
+			},
+			{
+				Name: "Interesting Pictures",
+				Slug: "interesting-pictures",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Nonprofits",
+			Slug: "Nonprofits",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Humanitarian",
+				Slug: "humanitarian",
+			},
+		},
+	},
+	{
+		BaseCategory: BaseCategory{
+			Name: "Gaming",
+			Slug: "gaming",
+		},
+		SubCategories: []SubCategory{
+			{
+				Name: "Celebrity Gamer",
+				Slug: "celebrity-gamer",
+			},
+			{
+				Name: "Games",
+				Slug: "games",
+			},
+			{
+				Name: "Gaming News",
+				Slug: "gaming-news",
+			},
+			{
+				Name: "eSport",
+				Slug: "esport",
 			},
 		},
 	},
