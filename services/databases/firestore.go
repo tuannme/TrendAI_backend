@@ -32,7 +32,7 @@ func InitFirestore(serviceAccountFilename string) (*firestore.Client, error) {
 	if _, err := os.Stat(serviceAccountFilename); os.IsNotExist(err) {
 		// Use project ID if service account doesn't exists
 		logs.Debug("Used GCP project ID")
-		appConf := &firebase.Config{ProjectID: conf.Get().GcpProjectID}
+		appConf := &firebase.Config{ProjectID: conf.Get().GoogleCloudProject}
 		app, err = firebase.NewApp(Context, appConf)
 	} else {
 		// Use service account
