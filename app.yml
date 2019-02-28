@@ -11,5 +11,9 @@ resources:
   cpu: 1
   memory_gb: 0.5
   disk_size_gb: 10
+env_variables:
+  APP_NAME: TrendAiBackend
+  APP_RUN_MODE: prod
+  APP_PORT: 8080
 skip_files:
   - conf/service_account.json
