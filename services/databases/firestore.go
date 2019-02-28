@@ -5,15 +5,18 @@ import (
 	"context"
 	"firebase.google.com/go"
 	"github.com/astaxie/beego/logs"
+	"github.com/trend-ai/TrendAI_mobile_backend/conf"
 	"google.golang.org/api/option"
+	"os"
 )
 
+var serviceAccountFile = "conf/service_account.json"
 var firestoreClient *firestore.Client
 var Context = context.Background()
 
 func init() {
 	var err error
-	firestoreClient, err = InitFirestore("conf/service_account.json")
+	firestoreClient, err = InitFirestore(serviceAccountFile)
 	if err != nil {
 		panic(err)
 	}
@@ -23,12 +26,20 @@ func init() {
 func InitFirestore(serviceAccountFilename string) (*firestore.Client, error) {
 	logs.Debug("Firestore service initiated!")
 
-	// Use a service account
-	sa := option.WithCredentialsFile(serviceAccountFilename)
-	app, err := firebase.NewApp(Context, nil, sa)
+	var err error
+	var app *firebase.App
 
-	//conf := &firebase.Config{ProjectID: "ascendant-line-229014"}
-	//app, err := firebase.NewApp(Context, conf)
+	if _, err := os.Stat(serviceAccountFilename); os.IsNotExist(err) {
+		// Use project ID if service account doesn't exists
+		logs.Debug("Used GCP project ID")
+		appConf := &firebase.Config{ProjectID: conf.Get().GcpProjectID}
+		app, err = firebase.NewApp(Context, appConf)
+	} else {
+		// Use service account
+		logs.Debug("Used GCP service account")
+		sa := option.WithCredentialsFile(serviceAccountFilename)
+		app, err = firebase.NewApp(Context, nil, sa)
+	}
 
 	if err != nil {
 		return nil, err
