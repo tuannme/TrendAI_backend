@@ -10,7 +10,7 @@ import (
 var userCollection *firestore.CollectionRef
 
 func init() {
-	userCollection = databases.GetFirestoreCollection("user")
+	userCollection = databases.GetFirestoreCollection("users")
 }
 
 func GetUserCollection() *firestore.CollectionRef {
