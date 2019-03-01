@@ -28,6 +28,29 @@ type Category struct {
 	SubCategories []SubCategory `json:"sub_categories" firestore:"sub_categories"`
 }
 
+type FirestoreCategory struct {
+	BaseCategory
+	Parent *firestore.DocumentRef `json:"parent" firestore:"parent"`
+}
+
+func (c *Category) ToFirestoreCategory(parent *firestore.DocumentRef) FirestoreCategory {
+	return FirestoreCategory{
+		BaseCategory: c.BaseCategory,
+		Parent:       parent,
+	}
+}
+
+func (c *SubCategory) ToFirestoreCategory(parent *firestore.DocumentRef) FirestoreCategory {
+	return FirestoreCategory{
+		BaseCategory: BaseCategory{
+			Id:   c.Id,
+			Name: c.Name,
+			Slug: c.Slug,
+		},
+		Parent: parent,
+	}
+}
+
 var categories = []Category{
 	{
 		BaseCategory: BaseCategory{
@@ -237,7 +260,7 @@ var categories = []Category{
 			},
 			{
 				Name: "Dance/electronic",
-				Slug: "dance/electronic",
+				Slug: "dance-electronic",
 			},
 			{
 				Name: "Metal",
@@ -328,7 +351,7 @@ var categories = []Category{
 	{
 		BaseCategory: BaseCategory{
 			Name: "Nonprofits",
-			Slug: "Nonprofits",
+			Slug: "nonprofits",
 		},
 		SubCategories: []SubCategory{
 			{

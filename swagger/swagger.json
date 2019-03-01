@@ -35,6 +35,26 @@
                 }
             }
         },
+        "/admin/interest_categories/v2": {
+            "put": {
+                "tags": [
+                    "admin"
+                ],
+                "description": "Push interest categories to database",
+                "operationId": "AdminController.PushInterestCategoriesV2",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.AuthenticationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "{object} models.ResponseWithError"
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "tags": [
