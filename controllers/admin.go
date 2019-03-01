@@ -28,51 +28,52 @@ func (o *AdminController) PushInterestCategories() {
 	categoryCollection := models.GetCategoryCollection()
 
 	// Loop all categories in our model to update to database
-	for _, cat := range models.GetCategories() {
+	for _, rawCategory := range models.GetCategories() {
 		var err error
-		var catRef *firestore.DocumentRef
-		var catData = cat.ToFirestoreCategory(nil)
+		var categoryRef *firestore.DocumentRef
+		var category = rawCategory.ToCategory(nil, nil)
 
 		// Get category by slug
-		catSnapshot, err := categoryCollection.Where("slug", "==", cat.Slug).Documents(ctx).Next()
+		catSnapshot, err := categoryCollection.Where("slug", "==", category.Slug).Documents(ctx).Next()
 		if err != nil {
 			// If category doesn't exists, add it
-			catRef, _, err = categoryCollection.Add(ctx, catData)
+			categoryRef, _, err = categoryCollection.Add(ctx, category)
 			if err != nil {
 				logs.Error("Add: Couldn't add new category:", err)
 				return
 			}
 		} else {
-			catRef = catSnapshot.Ref
+			categoryRef = catSnapshot.Ref
 		}
 
 		// Loop sub categories and add or update it
 		var child []*firestore.DocumentRef
-		for _, subCat := range cat.Child {
-			var subRef *firestore.DocumentRef
-			// Generate new sub-category's slug
-			subCat.Slug = cat.Slug + "/" + subCat.Slug
+		for _, rawSubCat := range rawCategory.Child {
+			var subCategory = rawSubCat.ToCategory(categoryRef, nil)
+			var subCategoryRef *firestore.DocumentRef
+			// Generate new sub-category's slug by parent slug
+			subCategory.Slug = category.Slug + "/" + subCategory.Slug
 			// Get sub category by slug
-			subSnap, err := categoryCollection.Where("slug", "==", subCat.Slug).Documents(ctx).Next()
+			subSnap, err := categoryCollection.Where("slug", "==", subCategory.Slug).Documents(ctx).Next()
 			if err != nil {
 				// If sub category doesn't exists, add it
-				subRef, _, err = categoryCollection.Add(ctx, subCat.ToFirestoreCategory(catRef))
+				subCategoryRef, _, err = categoryCollection.Add(ctx, subCategory)
 				if err != nil {
 					logs.Error("Add: Couldn't add new sub category:", err)
 					return
 				}
 			} else {
-				subRef = subSnap.Ref
+				subCategoryRef = subSnap.Ref
 			}
 			// Add sub category to child list
-			child = append(child, subRef)
+			child = append(child, subCategoryRef)
 		}
 
 		// Update parent category's child list
-		catData.Child = child
+		category.Child = child
 
 		// Update parent category with new data
-		_, err = catRef.Set(ctx, catData)
+		_, err = categoryRef.Set(ctx, category)
 		if err != nil {
 			logs.Error("Add: Couldn't save category:", err)
 			return

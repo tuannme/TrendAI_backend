@@ -93,6 +93,9 @@ paths:
         "500":
           description: '{object} models.ResponseWithError'
 definitions:
+  firestore.DocumentRef:
+    title: DocumentRef
+    type: object
   models.AuthenticationResponse:
     title: AuthenticationResponse
     type: object
@@ -109,16 +112,6 @@ definitions:
         type: string
       refresh_token:
         type: string
-  models.BaseCategory:
-    title: BaseCategory
-    type: object
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-      slug:
-        type: string
   models.Category:
     title: Category
     type: object
@@ -126,16 +119,15 @@ definitions:
       child:
         type: array
         items:
-          $ref: '#/definitions/models.SubCategory'
+          $ref: '#/definitions/firestore.DocumentRef'
       id:
         type: string
       name:
         type: string
+      parent:
+        $ref: '#/definitions/firestore.DocumentRef'
       slug:
         type: string
-  models.SubCategory:
-    title: SubCategory
-    type: object
   models.UserResponse:
     title: UserResponse
     type: object

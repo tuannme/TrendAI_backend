@@ -15,50 +15,34 @@ func GetCategoryCollection() *firestore.CollectionRef {
 	return categoryCollection
 }
 
-type BaseCategory struct {
-	Id   string `json:"id" firestore:"-"`
-	Slug string `json:"slug" firestore:"slug"`
-	Name string `json:"name" firestore:"name"`
-}
-
-type SubCategory BaseCategory
-
 type Category struct {
-	BaseCategory
-	Child []SubCategory `json:"child"`
-}
-
-type FirestoreCategory struct {
-	BaseCategory
+	Id     string                   `json:"id" firestore:"-"`
+	Slug   string                   `json:"slug" firestore:"slug"`
+	Name   string                   `json:"name" firestore:"name"`
 	Parent *firestore.DocumentRef   `json:"parent" firestore:"parent,omitempty"`
 	Child  []*firestore.DocumentRef `json:"child" firestore:"child,omitempty"`
 }
 
-func (c *Category) ToFirestoreCategory(child []*firestore.DocumentRef) FirestoreCategory {
-	return FirestoreCategory{
-		BaseCategory: c.BaseCategory,
-		Child:        child,
-	}
+type RawCategory struct {
+	Name  string        `json:"name"`
+	Slug  string        `json:"slug"`
+	Child []RawCategory `json:"child,omitempty"`
 }
 
-func (c *SubCategory) ToFirestoreCategory(parent *firestore.DocumentRef) FirestoreCategory {
-	return FirestoreCategory{
-		BaseCategory: BaseCategory{
-			Id:   c.Id,
-			Name: c.Name,
-			Slug: c.Slug,
-		},
+func (c *RawCategory) ToCategory(parent *firestore.DocumentRef, child []*firestore.DocumentRef) Category {
+	return Category{
+		Name:   c.Name,
+		Slug:   c.Slug,
 		Parent: parent,
+		Child:  child,
 	}
 }
 
-var categories = []Category{
+var categories = []RawCategory{
 	{
-		BaseCategory: BaseCategory{
-			Name: "News",
-			Slug: "news",
-		},
-		Child: []SubCategory{
+		Name: "News",
+		Slug: "news",
+		Child: []RawCategory{
 			{
 				Name: "Weather",
 				Slug: "weather",
@@ -102,11 +86,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Lifestyle",
-			Slug: "lifestyle",
-		},
-		Child: []SubCategory{
+		Name: "Lifestyle",
+		Slug: "lifestyle",
+		Child: []RawCategory{
 			{
 				Name: "Parenting",
 				Slug: "parenting",
@@ -142,11 +124,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Entertainment",
-			Slug: "entertainment",
-		},
-		Child: []SubCategory{
+		Name: "Entertainment",
+		Slug: "entertainment",
+		Child: []RawCategory{
 			{
 				Name: "Industry News",
 				Slug: "industry-news",
@@ -186,11 +166,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Fun",
-			Slug: "fun",
-		},
-		Child: []SubCategory{
+		Name: "Fun",
+		Slug: "fun",
+		Child: []RawCategory{
 			{
 				Name: "Trending",
 				Slug: "trending",
@@ -230,11 +208,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Music",
-			Slug: "music",
-		},
-		Child: []SubCategory{
+		Name: "Music",
+		Slug: "music",
+		Child: []RawCategory{
 			{
 				Name: "Pop",
 				Slug: "pop",
@@ -278,11 +254,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Technology",
-			Slug: "technology",
-		},
-		Child: []SubCategory{
+		Name: "Technology",
+		Slug: "technology",
+		Child: []RawCategory{
 			{
 				Name: "Technology Professionals & Reporters",
 				Slug: "technology-professionals-and-reporters",
@@ -294,11 +268,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Government & Polytics",
-			Slug: "government-and-polytics",
-		},
-		Child: []SubCategory{
+		Name: "Government & Polytics",
+		Slug: "government-and-polytics",
+		Child: []RawCategory{
 			{
 				Name: "Gov Officials & Agencies",
 				Slug: "gov-officials-and-agencies",
@@ -306,11 +278,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Science",
-			Slug: "science",
-		},
-		Child: []SubCategory{
+		Name: "Science",
+		Slug: "science",
+		Child: []RawCategory{
 			{
 				Name: "Science News",
 				Slug: "science-sews",
@@ -322,11 +292,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Arts & Culture",
-			Slug: "arts-and-culture",
-		},
-		Child: []SubCategory{
+		Name: "Arts & Culture",
+		Slug: "arts-and-culture",
+		Child: []RawCategory{
 			{
 				Name: "Design & Architecture",
 				Slug: "design-and-architecture",
@@ -350,11 +318,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Nonprofits",
-			Slug: "nonprofits",
-		},
-		Child: []SubCategory{
+		Name: "Nonprofits",
+		Slug: "nonprofits",
+		Child: []RawCategory{
 			{
 				Name: "Humanitarian",
 				Slug: "humanitarian",
@@ -362,11 +328,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Gaming",
-			Slug: "gaming",
-		},
-		Child: []SubCategory{
+		Name: "Gaming",
+		Slug: "gaming",
+		Child: []RawCategory{
 			{
 				Name: "Celebrity Gamer",
 				Slug: "celebrity-gamer",
@@ -386,11 +350,9 @@ var categories = []Category{
 		},
 	},
 	{
-		BaseCategory: BaseCategory{
-			Name: "Sports",
-			Slug: "sports",
-		},
-		Child: []SubCategory{
+		Name: "Sports",
+		Slug: "sports",
+		Child: []RawCategory{
 			{
 				Name: "NEL",
 				Slug: "nel",
@@ -467,6 +429,6 @@ var categories = []Category{
 	},
 }
 
-func GetCategories() []Category {
+func GetCategories() []RawCategory {
 	return categories
 }

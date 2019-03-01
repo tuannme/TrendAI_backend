@@ -140,6 +140,10 @@
         }
     },
     "definitions": {
+        "firestore.DocumentRef": {
+            "title": "DocumentRef",
+            "type": "object"
+        },
         "models.AuthenticationResponse": {
             "title": "AuthenticationResponse",
             "type": "object",
@@ -164,21 +168,6 @@
                 }
             }
         },
-        "models.BaseCategory": {
-            "title": "BaseCategory",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                }
-            }
-        },
         "models.Category": {
             "title": "Category",
             "type": "object",
@@ -186,7 +175,7 @@
                 "child": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.SubCategory"
+                        "$ref": "#/definitions/firestore.DocumentRef"
                     }
                 },
                 "id": {
@@ -195,14 +184,13 @@
                 "name": {
                     "type": "string"
                 },
+                "parent": {
+                    "$ref": "#/definitions/firestore.DocumentRef"
+                },
                 "slug": {
                     "type": "string"
                 }
             }
-        },
-        "models.SubCategory": {
-            "title": "SubCategory",
-            "type": "object"
         },
         "models.UserResponse": {
             "title": "UserResponse",
