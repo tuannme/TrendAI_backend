@@ -137,11 +137,13 @@ func (o *AdminController) PushInterestCategoriesV2() {
 	for _, cat := range models.GetCategories() {
 		var err error
 		var catRef *firestore.DocumentRef
+		var catData = cat.ToFirestoreCategory(nil)
+
+		// Get category by slug
 		catSnapshot, err := categoryCollection.Where("slug", "==", cat.Slug).Documents(ctx).Next()
 		if err != nil {
 			// If category doesn't exists, add it
-			catRef = categoryCollection.Doc(cat.Slug)
-			_, err = catRef.Set(ctx, cat.ToFirestoreCategory(nil))
+			catRef, _, err = categoryCollection.Add(ctx, catData)
 			if err != nil {
 				logs.Error("Add: Couldn't add new category:", err)
 				return
@@ -150,15 +152,36 @@ func (o *AdminController) PushInterestCategoriesV2() {
 			catRef = catSnapshot.Ref
 		}
 
+		// Loop sub categories and add or update it
+		var child []*firestore.DocumentRef
 		for _, subCat := range cat.SubCategories {
-			subId := cat.Slug + "-" + subCat.Slug
-			// Update new sub cat slug
+			var subRef *firestore.DocumentRef
+			// Generate new sub-category's slug
 			subCat.Slug = cat.Slug + "/" + subCat.Slug
-			_, err := categoryCollection.Doc(subId).Set(ctx, subCat.ToFirestoreCategory(catRef))
+			// Get sub category by slug
+			subSnap, err := categoryCollection.Where("slug", "==", subCat.Slug).Documents(ctx).Next()
 			if err != nil {
-				logs.Error("Add: Couldn't add new sub category:", err)
-				return
+				// If sub category doesn't exists, add it
+				subRef, _, err = categoryCollection.Add(ctx, subCat.ToFirestoreCategory(catRef))
+				if err != nil {
+					logs.Error("Add: Couldn't add new sub category:", err)
+					return
+				}
+			} else {
+				subRef = subSnap.Ref
 			}
+			// Add sub category to child list
+			child = append(child, subRef)
+		}
+
+		// Update parent category's child list
+		catData.Child = child
+
+		// Update parent category with new data
+		_, err = catRef.Set(ctx, catData)
+		if err != nil {
+			logs.Error("Add: Couldn't save category:", err)
+			return
 		}
 	}
 

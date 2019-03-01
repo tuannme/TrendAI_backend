@@ -30,13 +30,14 @@ type Category struct {
 
 type FirestoreCategory struct {
 	BaseCategory
-	Parent *firestore.DocumentRef `json:"parent" firestore:"parent"`
+	Parent *firestore.DocumentRef   `json:"parent" firestore:"parent,omitempty"`
+	Child  []*firestore.DocumentRef `json:"child" firestore:"child,omitempty"`
 }
 
-func (c *Category) ToFirestoreCategory(parent *firestore.DocumentRef) FirestoreCategory {
+func (c *Category) ToFirestoreCategory(child []*firestore.DocumentRef) FirestoreCategory {
 	return FirestoreCategory{
 		BaseCategory: c.BaseCategory,
-		Parent:       parent,
+		Child:        child,
 	}
 }
 
