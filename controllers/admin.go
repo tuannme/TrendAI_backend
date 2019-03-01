@@ -141,7 +141,7 @@ func (o *AdminController) PushInterestCategoriesV2() {
 		if err != nil {
 			// If category doesn't exists, add it
 			catRef = categoryCollection.Doc(cat.Slug)
-			_, err = categoryCollection.Doc(cat.Slug).Set(ctx, cat.ToFirestoreCategory(nil))
+			_, err = catRef.Set(ctx, cat.ToFirestoreCategory(nil))
 			if err != nil {
 				logs.Error("Add: Couldn't add new category:", err)
 				return
@@ -152,15 +152,12 @@ func (o *AdminController) PushInterestCategoriesV2() {
 
 		for _, subCat := range cat.SubCategories {
 			subId := cat.Slug + "-" + subCat.Slug
-			subSlug := cat.Slug + "/" + subCat.Slug
-			_, err := categoryCollection.Where("slug", "==", subSlug).Documents(ctx).Next()
+			// Update new sub cat slug
+			subCat.Slug = cat.Slug + "/" + subCat.Slug
+			_, err := categoryCollection.Doc(subId).Set(ctx, subCat.ToFirestoreCategory(catRef))
 			if err != nil {
-				// Category doesn't exists in remote list, add it
-				_, err := categoryCollection.Doc(subId).Set(ctx, subCat.ToFirestoreCategory(catRef))
-				if err != nil {
-					logs.Error("Add: Couldn't add new sub category:", err)
-					return
-				}
+				logs.Error("Add: Couldn't add new sub category:", err)
+				return
 			}
 		}
 	}
