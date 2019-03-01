@@ -378,14 +378,11 @@
 
 [[projects]]
   branch = "v2"
-  digest = "1:988de7520a09024d5d94cd99bd545afbf194893994ec759b1cda0a0bbb6adb80"
+  digest = "1:2642fd0b6900c77247d61d80cf2eb59a374ef4ffc2d25a1b95b87dc355b2894e"
   name = "gopkg.in/mgo.v2"
   packages = [
-    ".",
     "bson",
     "internal/json",
-    "internal/sasl",
-    "internal/scram",
   ]
   pruneopts = "UT"
   revision = "9856a29383ce1c59f308dd1cf0363a79b5bef6b5"
@@ -402,6 +399,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "cloud.google.com/go/firestore",
     "firebase.google.com/go",
     "github.com/astaxie/beego",
     "github.com/astaxie/beego/context",
@@ -413,7 +411,8 @@
     "github.com/dgrijalva/jwt-go/request",
     "github.com/joho/godotenv",
     "github.com/smartystreets/goconvey/convey",
-    "gopkg.in/mgo.v2",
+    "google.golang.org/api/iterator",
+    "google.golang.org/api/option",
     "gopkg.in/mgo.v2/bson",
   ]
   solver-name = "gps-cdcl"
