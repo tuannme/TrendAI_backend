@@ -25,7 +25,7 @@ type SubCategory BaseCategory
 
 type Category struct {
 	BaseCategory
-	SubCategories []SubCategory `json:"sub_categories" firestore:"sub_categories"`
+	Child []SubCategory `json:"child"`
 }
 
 type FirestoreCategory struct {
@@ -58,7 +58,7 @@ var categories = []Category{
 			Name: "News",
 			Slug: "news",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Weather",
 				Slug: "weather",
@@ -106,7 +106,7 @@ var categories = []Category{
 			Name: "Lifestyle",
 			Slug: "lifestyle",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Parenting",
 				Slug: "parenting",
@@ -146,7 +146,7 @@ var categories = []Category{
 			Name: "Entertainment",
 			Slug: "entertainment",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Industry News",
 				Slug: "industry-news",
@@ -190,7 +190,7 @@ var categories = []Category{
 			Name: "Fun",
 			Slug: "fun",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Trending",
 				Slug: "trending",
@@ -234,7 +234,7 @@ var categories = []Category{
 			Name: "Music",
 			Slug: "music",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Pop",
 				Slug: "pop",
@@ -282,7 +282,7 @@ var categories = []Category{
 			Name: "Technology",
 			Slug: "technology",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Technology Professionals & Reporters",
 				Slug: "technology-professionals-and-reporters",
@@ -298,7 +298,7 @@ var categories = []Category{
 			Name: "Government & Polytics",
 			Slug: "government-and-polytics",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Gov Officials & Agencies",
 				Slug: "gov-officials-and-agencies",
@@ -310,7 +310,7 @@ var categories = []Category{
 			Name: "Science",
 			Slug: "science",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Science News",
 				Slug: "science-sews",
@@ -326,7 +326,7 @@ var categories = []Category{
 			Name: "Arts & Culture",
 			Slug: "arts-and-culture",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Design & Architecture",
 				Slug: "design-and-architecture",
@@ -354,7 +354,7 @@ var categories = []Category{
 			Name: "Nonprofits",
 			Slug: "nonprofits",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Humanitarian",
 				Slug: "humanitarian",
@@ -366,7 +366,7 @@ var categories = []Category{
 			Name: "Gaming",
 			Slug: "gaming",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "Celebrity Gamer",
 				Slug: "celebrity-gamer",
@@ -390,7 +390,7 @@ var categories = []Category{
 			Name: "Sports",
 			Slug: "sports",
 		},
-		SubCategories: []SubCategory{
+		Child: []SubCategory{
 			{
 				Name: "NEL",
 				Slug: "nel",

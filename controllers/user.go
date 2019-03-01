@@ -158,7 +158,7 @@ func (o *UserController) GetCategories() {
 				break
 			}
 			sub.Id = subSnap.Ref.ID
-			cat.SubCategories = append(cat.SubCategories, sub)
+			cat.Child = append(cat.Child, sub)
 		}
 
 		cat.Id = catSnapshot.Ref.ID

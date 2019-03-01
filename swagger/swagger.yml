@@ -24,19 +24,6 @@ paths:
             $ref: '#/definitions/models.AuthenticationResponse'
         "400":
           description: '{object} models.ResponseWithError'
-  /admin/interest_categories/v2:
-    put:
-      tags:
-      - admin
-      description: Push interest categories to database
-      operationId: AdminController.PushInterestCategoriesV2
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.AuthenticationResponse'
-        "400":
-          description: '{object} models.ResponseWithError'
   /auth/login:
     post:
       tags:
@@ -136,16 +123,16 @@ definitions:
     title: Category
     type: object
     properties:
+      child:
+        type: array
+        items:
+          $ref: '#/definitions/models.SubCategory'
       id:
         type: string
       name:
         type: string
       slug:
         type: string
-      sub_categories:
-        type: array
-        items:
-          $ref: '#/definitions/models.SubCategory'
   models.SubCategory:
     title: SubCategory
     type: object
