@@ -2,6 +2,7 @@ package models
 
 import (
 	"cloud.google.com/go/firestore"
+	"context"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
 )
 
@@ -19,8 +20,46 @@ type Category struct {
 	Id     string                   `json:"id" firestore:"-"`
 	Slug   string                   `json:"slug" firestore:"slug"`
 	Name   string                   `json:"name" firestore:"name"`
-	Parent *firestore.DocumentRef   `json:"parent" firestore:"parent,omitempty"`
-	Child  []*firestore.DocumentRef `json:"child" firestore:"child,omitempty"`
+	Parent *firestore.DocumentRef   `json:"parent" firestore:"parent"`
+	Child  []*firestore.DocumentRef `json:"child" firestore:"child"`
+}
+
+type CategoryResponse struct {
+	Id    string             `json:"id"`
+	Name  string             `json:"name"`
+	Slug  string             `json:"slug"`
+	Child []CategoryResponse `json:"child,omitempty"`
+}
+
+func (c *Category) ToResponse(ctx context.Context) (*CategoryResponse, error) {
+	childResponse := make([]CategoryResponse, 0)
+	for _, subRef := range c.Child {
+		subSnap, err := subRef.Get(ctx)
+		if err != nil {
+			return nil, err
+		}
+		var subCategory Category
+		err = subSnap.DataTo(&subCategory)
+		if err != nil {
+			return nil, err
+		}
+		child := Category{
+			Id:   subRef.ID,
+			Name: subCategory.Name,
+			Slug: subCategory.Slug,
+		}
+		subResponse, err := child.ToResponse(ctx)
+		if err != nil {
+			return nil, err
+		}
+		childResponse = append(childResponse, *subResponse)
+	}
+	return &CategoryResponse{
+		Id:    c.Id,
+		Name:  c.Name,
+		Slug:  c.Slug,
+		Child: childResponse,
+	}, nil
 }
 
 type RawCategory struct {

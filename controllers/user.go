@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
+	"google.golang.org/api/iterator"
 	"net/http"
 	"time"
 )
@@ -118,60 +119,41 @@ func (o *UserController) GetCategories() {
 		o.ServeJSON()
 	}()
 
-	var err error
 	ctx := databases.Context
-	categories := make([]models.Category, 0)
+	categoriesResponse := make([]models.CategoryResponse, 0)
 	categoryCollection := models.GetCategoryCollection()
 
 	// Get parent categories from database
-	catSnapshots, err := categoryCollection.Where("parent", "==", "").Documents(ctx).GetAll()
-	if err != nil {
-		logs.Error("Couldn't get parent categories", err)
-		o.Ctx.Output.SetStatus(http.StatusInternalServerError)
-		res = models.NewResponseWithError("get_failed", "Couldn't get categories")
-		return
+	catIterator := categoryCollection.Where("parent", "==", nil).Documents(ctx)
+
+	// Loop all snapshots to get data
+	for {
+		catSnapshot, err := catIterator.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			logs.Error("Iterate category snapshots failed", err)
+			break
+		}
+		var category models.Category
+		err = catSnapshot.DataTo(&category)
+		if err != nil {
+			logs.Error("Couldn't convert category data to struct", err)
+			o.Ctx.Output.SetStatus(http.StatusInternalServerError)
+			res = models.NewResponseWithError("get_failed", "Couldn't get categories")
+			return
+		}
+		category.Id = catSnapshot.Ref.ID
+		catResponse, err := category.ToResponse(ctx)
+		if err != nil {
+			logs.Error("Couldn't get category response", err)
+			o.Ctx.Output.SetStatus(http.StatusInternalServerError)
+			res = models.NewResponseWithError("get_failed", "Couldn't get categories")
+			return
+		}
+		categoriesResponse = append(categoriesResponse, *catResponse)
 	}
 
-	logs.Info("catSnapshots", catSnapshots)
-
-	//// Loop all snapshots to get data
-	//for _, catSnapshot := range catSnapshots {
-	//	var catData models.FirestoreCategory
-	//	err = catSnapshot.DataTo(&catData)
-	//	if err != nil {
-	//		logs.Error("Couldn't convert category data to struct", err)
-	//		o.Ctx.Output.SetStatus(http.StatusInternalServerError)
-	//		res = models.NewResponseWithError("get_failed", "Couldn't get categories")
-	//		return
-	//	}
-	//	child := make([]models.SubCategory, 0)
-	//	for _, subRef := range catData.Child {
-	//		subSnap, err := subRef.Get(ctx)
-	//		if err != nil {
-	//			logs.Error("Couldn't get sub-category", err)
-	//			o.Ctx.Output.SetStatus(http.StatusInternalServerError)
-	//			res = models.NewResponseWithError("get_failed", "Couldn't get categories")
-	//			return
-	//		}
-	//		var subData models.FirestoreCategory
-	//		err = subSnap.DataTo(&subData)
-	//		if err != nil {
-	//			logs.Error("Couldn't convert sub-category to struct", err)
-	//			o.Ctx.Output.SetStatus(http.StatusInternalServerError)
-	//			res = models.NewResponseWithError("get_failed", "Couldn't get categories")
-	//			return
-	//		}
-	//		child = append(child, models.SubCategory{
-	//			Id: subRef.ID,
-	//			Name: subData.Name,
-	//			Slug: subData.Slug,
-	//		})
-	//	}
-	//	categories = append(categories, models.Category{
-	//		BaseCategory: catData.BaseCategory,
-	//		Child: child,
-	//	})
-	//}
-
-	res = categories
+	res = categoriesResponse
 }
