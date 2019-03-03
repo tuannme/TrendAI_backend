@@ -44,10 +44,11 @@ func (o *UserController) Patch() {
 	}()
 
 	var packet struct {
-		Name      string    `json:"name"`
-		Gender    string    `json:"gender"`
-		Dob       time.Time `json:"dob"`
-		Education string    `json:"education"`
+		Name               string    `json:"name"`
+		Gender             string    `json:"gender"`
+		Dob                time.Time `json:"dob"`
+		Education          string    `json:"education"`
+		InterestCategories []string  `json:"interest_categories"`
 	}
 
 	var rawPacket map[string]interface{}
@@ -89,6 +90,33 @@ func (o *UserController) Patch() {
 	// Check if they want to update education
 	if _, exists := rawPacket["education"]; exists {
 		user.Education = packet.Education
+	}
+
+	// Check if they want to update interest categories
+	if _, exists := rawPacket["interest_categories"]; exists {
+		categoryCollection := models.GetCategoryCollection()
+		interestCategories := make([]bson.ObjectId, 0)
+		for _, categoryId := range packet.InterestCategories {
+			if !bson.IsObjectIdHex(categoryId) {
+				o.Ctx.Output.SetStatus(http.StatusBadRequest)
+				res = models.NewResponseWithError("category_not_found", "Categories doesn't exists")
+				return
+			}
+			n, err := categoryCollection.FindId(bson.ObjectIdHex(categoryId)).Count()
+			if err != nil {
+				logs.Error("Find category by ID failed", err)
+				o.Ctx.Output.SetStatus(http.StatusInternalServerError)
+				res = models.NewResponseWithError("update_failed", "Couldn't update user")
+				return
+			}
+			if n == 0 {
+				o.Ctx.Output.SetStatus(http.StatusBadRequest)
+				res = models.NewResponseWithError("category_not_found", "Categories doesn't exists")
+				return
+			}
+			interestCategories = append(interestCategories, bson.ObjectIdHex(categoryId))
+		}
+		user.InterestCategories = interestCategories
 	}
 
 	// Save data

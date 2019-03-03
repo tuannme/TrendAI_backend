@@ -29,14 +29,15 @@ var UserGenders = map[int]string{
 }
 
 type User struct {
-	Id            bson.ObjectId  `json:"id,omitempty" bson:"_id,omitempty"`
-	Name          string         `json:"name" bson:"name"`
-	Email         string         `json:"email" bson:"email"`
-	Gender        int            `json:"gender" bson:"gender"`
-	Dob           time.Time      `json:"dob" bson:"dob"`
-	Education     string         `json:"education" bson:"education"`
-	ExternalUsers []ExternalUser `json:"external_users" bson:"external_users"`
-	CreatedAt     time.Time      `json:"created_at" bson:"created_at"`
+	Id                 bson.ObjectId   `json:"id,omitempty" bson:"_id,omitempty"`
+	Name               string          `json:"name" bson:"name"`
+	Email              string          `json:"email" bson:"email"`
+	Gender             int             `json:"gender" bson:"gender"`
+	Dob                time.Time       `json:"dob" bson:"dob"`
+	Education          string          `json:"education" bson:"education"`
+	InterestCategories []bson.ObjectId `json:"interest_categories" bson:"interest_categories"`
+	ExternalUsers      []ExternalUser  `json:"external_users" bson:"external_users"`
+	CreatedAt          time.Time       `json:"created_at" bson:"created_at"`
 }
 
 type ExternalUser struct {
