@@ -16,6 +16,8 @@ To run application, please go inside project directory and run `docker-compose u
 Your application located at [http://localhost:8080](http://localhost:8080). 
 
 ## APIs
+API v1 for development server: [https://trendai-bb810.appspot.com/v1/](https://trendai-bb810.appspot.com/v1/)
+
 ### Login [POST /auth/login]
 Use this API for authentication.
 
