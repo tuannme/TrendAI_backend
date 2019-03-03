@@ -57,7 +57,7 @@ func (o *AuthController) Login() {
 
 	// Validate credentials
 	IncludeEmail := true
-	twitterUser, _, err := client.Accounts.VerifyCredentials(&twitter.AccountVerifyParams{
+	remoteTwitterUser, _, err := client.Accounts.VerifyCredentials(&twitter.AccountVerifyParams{
 		IncludeEmail: &IncludeEmail,
 	})
 	if err != nil {
@@ -67,6 +67,7 @@ func (o *AuthController) Login() {
 		return
 	}
 
+	twitterUser := models.TwitterUser(*remoteTwitterUser)
 	userCollection := models.GetUserCollection()
 
 	// Get internal user which matched with twitter email
@@ -74,14 +75,12 @@ func (o *AuthController) Login() {
 	err = userCollection.Find(bson.M{"email": twitterUser.Email}).One(&user)
 	if err != nil {
 		// Create new user document
-		user = models.User{
-			Name:      twitterUser.Name,
-			Email:     twitterUser.Email,
-			CreatedAt: time.Now().UTC(),
-		}
+		user = twitterUser.ToUser()
+		user.CreatedAt = time.Now().UTC()
 	} else {
 		// Re-sync twitter data
-		user.Name = twitterUser.Name
+		user.SyncTwitterData(&twitterUser)
+		user.UpdatedAt = time.Now().UTC()
 	}
 
 	// Current external user

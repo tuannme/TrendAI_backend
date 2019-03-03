@@ -36,8 +36,14 @@ type User struct {
 	Dob                time.Time       `json:"dob" bson:"dob"`
 	Education          string          `json:"education" bson:"education"`
 	InterestCategories []bson.ObjectId `json:"interest_categories" bson:"interest_categories"`
+	FavouritesCount    int             `json:"favourites_count" bson:"favourites_count"`
+	Following          bool            `json:"following" bson:"following"`
+	FollowersCount     int             `json:"followers_count" bson:"followers_count"`
+	FriendsCount       int             `json:"friends_count" bson:"friends_count"`
+	StatusesCount      int             `json:"statuses_count" bson:"statuses_count"`
 	ExternalUsers      []ExternalUser  `json:"external_users" bson:"external_users"`
-	CreatedAt          time.Time       `json:"created_at" bson:"created_at"`
+	UpdatedAt          time.Time       `json:"updated_at" bson:"updated_at,omitempty"`
+	CreatedAt          time.Time       `json:"created_at" bson:"created_at,omitempty"`
 }
 
 type ExternalUser struct {
