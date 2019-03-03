@@ -1,27 +1,27 @@
 package models
 
 import (
-	"cloud.google.com/go/firestore"
-	"context"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
-var categoryCollection *firestore.CollectionRef
+var categoryCollection *mgo.Collection
 
 func init() {
-	categoryCollection = databases.GetFirestoreCollection("categories")
+	categoryCollection = databases.GetMongoCollection("categories")
 }
 
-func GetCategoryCollection() *firestore.CollectionRef {
+func GetCategoryCollection() *mgo.Collection {
 	return categoryCollection
 }
 
 type Category struct {
-	Id     string                   `json:"id" firestore:"-"`
-	Slug   string                   `json:"slug" firestore:"slug"`
-	Name   string                   `json:"name" firestore:"name"`
-	Parent *firestore.DocumentRef   `json:"parent" firestore:"parent"`
-	Child  []*firestore.DocumentRef `json:"child" firestore:"child"`
+	Id     bson.ObjectId   `json:"id,omitempty" bson:"_id,omitempty"`
+	Slug   string          `json:"slug" bson:"slug"`
+	Name   string          `json:"name" bson:"name"`
+	Parent bson.ObjectId   `json:"parent" bson:"parent,omitempty"`
+	Child  []bson.ObjectId `json:"child" bson:"child,omitempty"`
 }
 
 type CategoryResponse struct {
@@ -31,34 +31,22 @@ type CategoryResponse struct {
 	Child []CategoryResponse `json:"child,omitempty"`
 }
 
-func (c *Category) ToResponse(ctx context.Context) (*CategoryResponse, error) {
-	childResponse := make([]CategoryResponse, 0)
-	for _, subRef := range c.Child {
-		subSnap, err := subRef.Get(ctx)
+func (c *Category) ToResponse() (*CategoryResponse, error) {
+	childList := make([]CategoryResponse, 0)
+	for _, childId := range c.Child {
+		var child Category
+		err := categoryCollection.FindId(childId).One(&child)
 		if err != nil {
 			return nil, err
 		}
-		var subCategory Category
-		err = subSnap.DataTo(&subCategory)
-		if err != nil {
-			return nil, err
-		}
-		child := Category{
-			Id:   subRef.ID,
-			Name: subCategory.Name,
-			Slug: subCategory.Slug,
-		}
-		subResponse, err := child.ToResponse(ctx)
-		if err != nil {
-			return nil, err
-		}
-		childResponse = append(childResponse, *subResponse)
+		childResponse, _ := child.ToResponse()
+		childList = append(childList, *childResponse)
 	}
 	return &CategoryResponse{
-		Id:    c.Id,
+		Id:    c.Id.Hex(),
 		Name:  c.Name,
 		Slug:  c.Slug,
-		Child: childResponse,
+		Child: childList,
 	}, nil
 }
 
@@ -68,12 +56,10 @@ type RawCategory struct {
 	Child []RawCategory `json:"child,omitempty"`
 }
 
-func (c *RawCategory) ToCategory(parent *firestore.DocumentRef, child []*firestore.DocumentRef) Category {
+func (c *RawCategory) ToCategory() Category {
 	return Category{
-		Name:   c.Name,
-		Slug:   c.Slug,
-		Parent: parent,
-		Child:  child,
+		Name: c.Name,
+		Slug: c.Slug,
 	}
 }
 
@@ -468,6 +454,6 @@ var categories = []RawCategory{
 	},
 }
 
-func GetCategories() []RawCategory {
+func GetRawCategories() []RawCategory {
 	return categories
 }

@@ -13,3 +13,12 @@ services:
       - "8080:8080"
     env_file:
       - .env
+  mongo:
+    container_name: trendai_backend_mongo
+    image: mongo
+    volumes:
+      - mongo:/data/db
+
+volumes:
+  mongo:
+    driver: local

@@ -1,19 +1,20 @@
 package models
 
 import (
-	"cloud.google.com/go/firestore"
 	"errors"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
-var userCollection *firestore.CollectionRef
+var userCollection *mgo.Collection
 
 func init() {
-	userCollection = databases.GetFirestoreCollection("users")
+	userCollection = databases.GetMongoCollection("users")
 }
 
-func GetUserCollection() *firestore.CollectionRef {
+func GetUserCollection() *mgo.Collection {
 	return userCollection
 }
 
@@ -28,21 +29,21 @@ var UserGenders = map[int]string{
 }
 
 type User struct {
-	Id            string         `json:"id,omitempty" firestore:"-"`
-	Name          string         `json:"name" firestore:"name"`
-	Email         string         `json:"email" firestore:"email"`
-	Gender        int            `json:"gender" firestore:"gender"`
-	Dob           time.Time      `json:"dob" firestore:"dob"`
-	Education     string         `json:"education" firestore:"education"`
-	ExternalUsers []ExternalUser `json:"external_users" firestore:"external_users"`
-	CreatedAt     time.Time      `json:"created_at" firestore:"created_at"`
+	Id            bson.ObjectId  `json:"id,omitempty" bson:"_id,omitempty"`
+	Name          string         `json:"name" bson:"name"`
+	Email         string         `json:"email" bson:"email"`
+	Gender        int            `json:"gender" bson:"gender"`
+	Dob           time.Time      `json:"dob" bson:"dob"`
+	Education     string         `json:"education" bson:"education"`
+	ExternalUsers []ExternalUser `json:"external_users" bson:"external_users"`
+	CreatedAt     time.Time      `json:"created_at" bson:"created_at"`
 }
 
 type ExternalUser struct {
-	AppId           string    `json:"app_id" firestore:"app_id"`
-	UserId          string    `json:"user_id" firestore:"user_id"`
-	LastConnectedAt time.Time `json:"last_connected_at" firestore:"last_connected_at"`
-	CreatedAt       time.Time `json:"created_at" firestore:"created_at"`
+	AppId           string    `json:"app_id" bson:"app_id"`
+	UserId          string    `json:"user_id" bson:"user_id"`
+	LastConnectedAt time.Time `json:"last_connected_at" bson:"last_connected_at"`
+	CreatedAt       time.Time `json:"created_at" bson:"created_at"`
 }
 
 type UserResponse struct {
@@ -59,7 +60,7 @@ type UserResponse struct {
 func (u *User) ToResponse() UserResponse {
 	gender, _ := UserGenderToStr(u.Gender)
 	return UserResponse{
-		Id:        u.Id,
+		Id:        u.Id.Hex(),
 		Name:      u.Name,
 		Email:     u.Email,
 		Gender:    gender,

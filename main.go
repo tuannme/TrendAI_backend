@@ -12,13 +12,8 @@ func main() {
 	logs.Debug("App initiated: ", beego.BConfig.AppName)
 	logs.Debug("App run mode: ", beego.BConfig.RunMode)
 
-	// Get firestore client
-	firestoreClient := databases.GetFirestoreClient()
-
-	// Close firestore connection when main function stopped
-	defer func() {
-		_ = firestoreClient.Close()
-	}()
+	// Close database connection when stop main function
+	defer databases.GetMongoSession().Close()
 
 	// Beego config
 	if beego.BConfig.RunMode == "dev" {

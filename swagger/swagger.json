@@ -140,8 +140,8 @@
         }
     },
     "definitions": {
-        "firestore.DocumentRef": {
-            "title": "DocumentRef",
+        "bson.ObjectId": {
+            "title": "ObjectId",
             "type": "object"
         },
         "models.AuthenticationResponse": {
@@ -175,17 +175,17 @@
                 "child": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/firestore.DocumentRef"
+                        "$ref": "#/definitions/bson.ObjectId"
                     }
                 },
                 "id": {
-                    "type": "string"
+                    "$ref": "#/definitions/bson.ObjectId"
                 },
                 "name": {
                     "type": "string"
                 },
                 "parent": {
-                    "$ref": "#/definitions/firestore.DocumentRef"
+                    "$ref": "#/definitions/bson.ObjectId"
                 },
                 "slug": {
                     "type": "string"

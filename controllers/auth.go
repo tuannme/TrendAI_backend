@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"cloud.google.com/go/firestore"
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -10,7 +9,6 @@ import (
 	"github.com/trend-ai/TrendAI_mobile_backend/conf"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/authentications"
-	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"strconv"
@@ -69,29 +67,19 @@ func (o *AuthController) Login() {
 		return
 	}
 
-	ctx := databases.Context
 	userCollection := models.GetUserCollection()
 
 	// Get internal user which matched with twitter email
 	var user models.User
-	userDoc, err := userCollection.Where("email", "==", twitterUser.Email).Documents(ctx).Next()
-	var userRef *firestore.DocumentRef
+	err = userCollection.Find(bson.M{"email": twitterUser.Email}).One(&user)
 	if err != nil {
 		// Create new user document
-		userRef = userCollection.NewDoc()
 		user = models.User{
 			Name:      twitterUser.Name,
 			Email:     twitterUser.Email,
 			CreatedAt: time.Now().UTC(),
 		}
 	} else {
-		userRef = userDoc.Ref
-		if err = userDoc.DataTo(&user); err != nil {
-			logs.Error("Parse user data failure:", err)
-			o.Ctx.Output.SetStatus(http.StatusUnauthorized)
-			res = models.NewResponseWithError("unauthorized", "Could't validate your credentials")
-			return
-		}
 		// Re-sync twitter data
 		user.Name = twitterUser.Name
 	}
@@ -122,7 +110,12 @@ func (o *AuthController) Login() {
 	}
 
 	// Save data
-	_, err = userRef.Set(ctx, user)
+	if user.Id.Valid() {
+		err = models.GetUserCollection().UpdateId(user.Id, user)
+	} else {
+		user.Id = bson.NewObjectId()
+		err = models.GetUserCollection().Insert(user)
+	}
 
 	// If saving fail, then response error
 	if err != nil {
@@ -131,9 +124,6 @@ func (o *AuthController) Login() {
 		res = models.NewResponseWithError("unauthorized", "Unauthorized")
 		return
 	}
-
-	// Get user ID
-	user.Id = userRef.ID
 
 	// Generate authentication to for current user
 	authenticationToken, err := authentications.GenerateAuthenticationTokenByUser(user)

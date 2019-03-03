@@ -9,7 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/trend-ai/TrendAI_mobile_backend/conf"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
-	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"time"
 )
@@ -85,8 +85,9 @@ func JwtAuthenticationFilter() beego.FilterFunc {
 
 		// Get user from our database
 		userId := fmt.Sprintf("%v", uid)
+		var user models.User
 		userCollection := models.GetUserCollection()
-		userSnapshot, err := userCollection.Doc(userId).Get(databases.Context)
+		err = userCollection.FindId(bson.ObjectIdHex(userId)).One(&user)
 
 		// Account doesn't exists
 		if err != nil {
@@ -94,19 +95,6 @@ func JwtAuthenticationFilter() beego.FilterFunc {
 			_ = ctx.Output.JSON(models.NewResponseWithError("unauthorized", "User is not exists"), hasIndent, false)
 			return
 		}
-
-		// Cast user data to user struct
-		var user models.User
-		err = userSnapshot.DataTo(&user)
-		if err != nil {
-			logs.Debug("Parse user data failed", err)
-			ctx.Output.SetStatus(http.StatusUnauthorized)
-			_ = ctx.Output.JSON(models.NewResponseWithError("unauthorized", "User is not exists"), hasIndent, false)
-			return
-		}
-
-		// Get user id
-		user.Id = userSnapshot.Ref.ID
 
 		// Check if token was expired
 		if int64(exp.(float64)) < time.Now().Unix() {

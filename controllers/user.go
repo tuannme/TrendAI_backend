@@ -5,8 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
-	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
-	"google.golang.org/api/iterator"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"time"
 )
@@ -92,11 +91,9 @@ func (o *UserController) Patch() {
 		user.Education = packet.Education
 	}
 
-	ctx := databases.Context
 	// Save data
 	userCollection := models.GetUserCollection()
-	userRef := userCollection.Doc(user.Id)
-	_, err := userRef.Set(ctx, user)
+	err := userCollection.UpdateId(user.Id, user)
 	if err != nil {
 		logs.Error("Couldn't update user:", err)
 		o.Ctx.Output.SetStatus(http.StatusInternalServerError)
@@ -119,33 +116,22 @@ func (o *UserController) GetCategories() {
 		o.ServeJSON()
 	}()
 
-	ctx := databases.Context
+	var categories []models.Category
 	categoriesResponse := make([]models.CategoryResponse, 0)
 	categoryCollection := models.GetCategoryCollection()
 
 	// Get parent categories from database
-	catIterator := categoryCollection.Where("parent", "==", nil).Documents(ctx)
+	err := categoryCollection.Find(bson.M{"parent": nil}).All(&categories)
+	if err != nil {
+		logs.Error("Couldn't get categories")
+		o.Ctx.Output.SetStatus(http.StatusInternalServerError)
+		res = models.NewResponseWithError("get_failed", "Couldn't get categories")
+		return
+	}
 
 	// Loop all snapshots to get data
-	for {
-		catSnapshot, err := catIterator.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			logs.Error("Iterate category snapshots failed", err)
-			break
-		}
-		var category models.Category
-		err = catSnapshot.DataTo(&category)
-		if err != nil {
-			logs.Error("Couldn't convert category data to struct", err)
-			o.Ctx.Output.SetStatus(http.StatusInternalServerError)
-			res = models.NewResponseWithError("get_failed", "Couldn't get categories")
-			return
-		}
-		category.Id = catSnapshot.Ref.ID
-		catResponse, err := category.ToResponse(ctx)
+	for _, category := range categories {
+		catResponse, err := category.ToResponse()
 		if err != nil {
 			logs.Error("Couldn't get category response", err)
 			o.Ctx.Output.SetStatus(http.StatusInternalServerError)
