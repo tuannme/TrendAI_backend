@@ -104,7 +104,8 @@ Update information for current user.
                 "name": "Bui Thang",
                 "gender": "male",
                 "dob": "1994-05-11T00:00:00Z",
-                "education": "University"
+                "education": "University",
+                "interest_categories": ["5c7bd24195d42205ad86b4f7", "5c7bd24195d42205ad86b503"]
             }
 
 + Response 200 (application/json)
@@ -134,6 +135,13 @@ Update information for current user.
             "message": "Unauthorized"
         }
 
++ Response 400 (application/json)
+
+        {
+            "code": "category_not_found",
+            "message": "Categories doesn't exists"
+        }
+
 + Response 500 (application/json)
 
         {
@@ -155,53 +163,46 @@ Get list of categories available.
 
         [
             {
-                "id": "5h3fO6lXipYjZGxvLDw9",
-                "slug": "gaming",
-                "name": "Gaming",
-                "sub_categories": [
+                "id": "5c7bd24195d42205ad86b4f5",
+                "name": "News",
+                "slug": "news",
+                "child": [
                     {
-                        "id": "dZvHuNP6LRWMImNtM22T",
-                        "slug": "gaming-news",
-                        "name": "Gaming News"
+                        "id": "5c7bd24195d42205ad86b4f6",
+                        "name": "Weather",
+                        "slug": "news/weather"
                     },
                     {
-                        "id": "lUhk0q2bM3ZoPbM6Vl2b",
-                        "slug": "esport",
-                        "name": "eSport"
+                        "id": "5c7bd24195d42205ad86b4f7",
+                        "name": "History",
+                        "slug": "news/history"
                     },
                     {
-                        "id": "o0rRy49gpeUesf9yD16F",
-                        "slug": "games",
-                        "name": "Games"
+                        "id": "5c7bd24195d42205ad86b4f8",
+                        "name": "Politics",
+                        "slug": "news/politics"
                     },
                     {
-                        "id": "opyh5IB8B6BTbFc4HHJA",
-                        "slug": "celebrity-gamer",
-                        "name": "Celebrity Gamer"
+                        "id": "5c7bd24195d42205ad86b4f9",
+                        "name": "Health",
+                        "slug": "news/health"
                     }
                 ]
             },
             {
-                "id": "DocYIB8M57d4qj4vxdz7",
-                "slug": "Nonprofits",
-                "name": "Nonprofits",
-                "sub_categories": [
+                "id": "5c7bd24195d42205ad86b500",
+                "name": "Lifestyle",
+                "slug": "lifestyle",
+                "child": [
                     {
-                        "id": "3fmUK3L6Gvi9788xGwOK",
-                        "slug": "humanitarian",
-                        "name": "Humanitarian"
-                    }
-                ]
-            },
-            {
-                "id": "OuBuXlKxvKBoRnSPgTWB",
-                "slug": "government-and-polytics",
-                "name": "Government & Polytics",
-                "sub_categories": [
+                        "id": "5c7bd24195d42205ad86b501",
+                        "name": "Parenting",
+                        "slug": "lifestyle/parenting"
+                    },
                     {
-                        "id": "cDoXJnWQGR7rkpwD6Cbm",
-                        "slug": "gov-officials-and-agencies",
-                        "name": "Gov Officials & Agencies A"
+                        "id": "5c7bd24195d42205ad86b502",
+                        "name": "DIY & Home",
+                        "slug": "lifestyle/diy-and-home"
                     }
                 ]
             }
