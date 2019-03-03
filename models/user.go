@@ -37,11 +37,11 @@ type User struct {
 	Education          string          `json:"education" bson:"education"`
 	InterestCategories []bson.ObjectId `json:"interest_categories" bson:"interest_categories"`
 	FavouritesCount    int             `json:"favourites_count" bson:"favourites_count"`
-	Following          bool            `json:"following" bson:"following"`
 	FollowersCount     int             `json:"followers_count" bson:"followers_count"`
 	FriendsCount       int             `json:"friends_count" bson:"friends_count"`
 	StatusesCount      int             `json:"statuses_count" bson:"statuses_count"`
-	ExternalUsers      []ExternalUser  `json:"external_users" bson:"external_users"`
+	TweetStat          TweetStat       `json:"tweet_stat" bson:"tweet_stat,omitempty"`
+	ExternalUsers      []ExternalUser  `json:"external_users" bson:"external_users,omitempty"`
 	UpdatedAt          time.Time       `json:"updated_at" bson:"updated_at,omitempty"`
 	CreatedAt          time.Time       `json:"created_at" bson:"created_at,omitempty"`
 }
@@ -49,8 +49,15 @@ type User struct {
 type ExternalUser struct {
 	AppId           string    `json:"app_id" bson:"app_id"`
 	UserId          string    `json:"user_id" bson:"user_id"`
+	Username        string    `json:"username" bson:"username"`
 	LastConnectedAt time.Time `json:"last_connected_at" bson:"last_connected_at"`
 	CreatedAt       time.Time `json:"created_at" bson:"created_at"`
+}
+
+type TweetStat struct {
+	ReplyCount    int `json:"reply_count" bson:"reply_count"`
+	RetweetCount  int `json:"retweet_count" bson:"retweet_count"`
+	FavoriteCount int `json:"favorite_count" bson:"favorite_count"`
 }
 
 type UserResponse struct {

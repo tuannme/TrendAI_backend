@@ -83,11 +83,31 @@ func (o *AuthController) Login() {
 		user.UpdatedAt = time.Now().UTC()
 	}
 
+	// Get user's tweets
+	tweets, _, err := client.Timelines.UserTimeline(&twitter.UserTimelineParams{
+		ScreenName: twitterUser.ScreenName,
+	})
+	if err != nil {
+		logs.Error("Error when search user's tweets", err)
+	} else {
+		var replyCount = 0
+		var retweetCount = 0
+		var favoriteCount = 0
+		for _, tweet := range tweets {
+			replyCount += tweet.ReplyCount
+			retweetCount += tweet.RetweetCount
+			favoriteCount += tweet.FavoriteCount
+		}
+		user.TweetStat.ReplyCount = replyCount
+		user.TweetStat.RetweetCount = retweetCount
+		user.TweetStat.FavoriteCount = favoriteCount
+	}
+
 	// Current external user
 	externalUser := models.ExternalUser{
 		AppId:           conf.Get().TwitterAppId,
 		UserId:          strconv.FormatInt(twitterUser.ID, 10),
-		CreatedAt:       time.Now().UTC(),
+		Username:        twitterUser.ScreenName,
 		LastConnectedAt: time.Now().UTC(),
 	}
 
@@ -102,10 +122,12 @@ func (o *AuthController) Login() {
 
 	// If not exists, assign external user for this user
 	if foundKey < 0 {
+		externalUser.CreatedAt = time.Now().UTC()
 		user.ExternalUsers = append(user.ExternalUsers, externalUser)
 	} else {
 		//If exists, update last connected at
-		user.ExternalUsers[foundKey].LastConnectedAt = bson.Now()
+		externalUser.CreatedAt = user.ExternalUsers[foundKey].CreatedAt
+		user.ExternalUsers[foundKey] = externalUser
 	}
 
 	// Save data

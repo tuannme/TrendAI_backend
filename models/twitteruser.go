@@ -12,7 +12,6 @@ func (t *TwitterUser) ToUser() User {
 		Name:            t.Name,
 		Email:           t.Email,
 		FavouritesCount: t.FavouritesCount,
-		Following:       t.Following,
 		FollowersCount:  t.FollowersCount,
 		FriendsCount:    t.FriendsCount,
 		StatusesCount:   t.StatusesCount,
@@ -23,7 +22,6 @@ func (t *TwitterUser) ToUser() User {
 func (u *User) SyncTwitterData(t *TwitterUser) {
 	u.Name = t.Name
 	u.FavouritesCount = t.FavouritesCount
-	u.Following = t.Following
 	u.FollowersCount = t.FollowersCount
 	u.StatusesCount = t.StatusesCount
 }
