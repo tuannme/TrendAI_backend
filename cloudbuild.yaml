@@ -3,16 +3,7 @@ steps:
     args: ['cp', 'gs://trendai-envvars/.env.$BRANCH_NAME', '.env']
 
   - name: 'gcr.io/$PROJECT_ID/dep'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        echo "==> List of directories before run dep"
-        ls
-        echo "==> Running dep ensure"
-        dep ensure -v
-        echo "==> List of directories after run dep"
-        ls
+    args: ['ensure', '-v']
     env:
     - 'GOPATH='
     - 'PROJECT_ROOT=github.com/trend-ai/TrendAI_backend'
