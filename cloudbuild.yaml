@@ -1,20 +1,13 @@
 steps:
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', 'gs://trendai-envvars/.env.$BRANCH_NAME', '.env']
-    volumes:
-      - name: 'project'
-        path: '/workspace'
+
   - name: 'gcr.io/$PROJECT_ID/dep'
     args: ['ensure', '-v']
-    volumes:
-      - name: 'project'
-        path: '/go/src/workspace'
-    dir: '/go/src/workspace'
-    id: 'dep'
+    env:
+    - 'GOPATH='
+    - 'PROJECT_ROOT=github.com/trend-ai/TrendAI_backend'
+
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy"]
-    volumes:
-      - name: 'project'
-        path: '/go/src/workspace'
-    dir: '/go/src/workspace'
 timeout: "1600s"
