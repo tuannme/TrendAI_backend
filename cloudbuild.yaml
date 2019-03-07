@@ -5,7 +5,7 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/dep'
     args: ['ensure', '-v']
     env:
-    - 'GOPATH='
+    - 'GOPATH=/'
     - 'PROJECT_ROOT=/workspace'
 
   - name: "gcr.io/cloud-builders/gcloud"
