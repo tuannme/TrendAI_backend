@@ -3,7 +3,7 @@ steps:
     args: ['cp', 'gs://trendai-envvars/.env.$BRANCH_NAME', '.env']
   - name: 'gcr.io/$PROJECT_ID/dep'
     args: ['ensure', '-v']
-    env: ['GOPATH=/', 'PROJECT_ROOT=/workspace']
+    env: ['GOPATH=.', 'PROJECT_ROOT=/workspace']
     id: 'dep'
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy"]
