@@ -1,6 +1,10 @@
 steps:
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', 'gs://trendai-envvars/.env.$BRANCH_NAME', '.env']
+  - name: 'gcr.io/$PROJECT_ID/dep'
+    args: ['ensure', '-v']
+    env: ['PROJECT_ROOT=github.com/trend-ai/TrendAI_mobile_backend']
+    id: 'dep'
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy"]
 timeout: "1600s"
