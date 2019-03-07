@@ -7,7 +7,6 @@ steps:
     args:
       - '-c'
       - |
-        echo "==> Current GOPATH $GOPATH"
         echo "==> List of directories before run dep"
         ls
         echo "==> Running dep ensure"
