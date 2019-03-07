@@ -9,5 +9,6 @@ steps:
     - 'PROJECT_ROOT=github.com/trend-ai/TrendAI_backend'
 
   - name: "gcr.io/cloud-builders/gcloud"
-    args: ["app", "deploy"]
+    args: ["app", "deploy", "app.yml"]
+
 timeout: "1600s"
