@@ -3,7 +3,7 @@ steps:
     args: ['cp', 'gs://trendai-envvars/.env.$BRANCH_NAME', '.env']
     volumes:
       - name: 'project'
-        path: '.'
+        path: '/workspace'
   - name: 'gcr.io/$PROJECT_ID/dep'
     args: ['ensure', '-v']
     volumes:
