@@ -6,7 +6,7 @@ steps:
     args: ['ensure', '-v']
     env:
     - 'GOPATH='
-    - 'PROJECT_ROOT=github.com/trend-ai/TrendAI_backend'
+    - 'PROJECT_ROOT=/workspace'
 
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy", "app.yml"]
