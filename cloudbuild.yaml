@@ -2,15 +2,28 @@ steps:
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', 'gs://trendai-envvars/.env.$BRANCH_NAME', '.env']
 
-  - name: 'gcr.io/$PROJECT_ID/dep'
-    args: ['ensure', '-v']
-    env:
-    - 'GOPATH='
-    - 'PROJECT_ROOT=github.com/trend-ai/TrendAI_backend'
-
-  - name: "gcr.io/cloud-builders/gcloud"
+  - name: gcr.io/cloud-builders/go:debian
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        echo "==> Instaling dep..." && go get -u github.com/golang/dep/cmd/dep
+        echo "==> List of files in workspace" && ls -lah
+        echo "==> Making project direcory..." && mkdir -p /builder/home/go/src/github.com/trend-ai/TrendAI_backend
+        echo "==> Coping default workspace to project directory..."
+        cp -ra /workspace/. /builder/home/go/src/github.com/trend-ai/TrendAI_backend/
+        echo "==> List of files in project directory"
+        ls -lah /builder/home/go/src/github.com/trend-ai/TrendAI_backend
+  - name: gcr.io/cloud-builders/go:debian
+    dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        echo "==> Current working directory" && pwd
+        echo "==> Running dep ensure..." && /builder/home/go/bin/dep ensure -v
+  - name: gcr.io/cloud-builders/gcloud
+    dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
     args: ["app", "deploy", "app.yml", "--log-http", "--verbosity=debug"]
-    env:
-      - 'GOPATH=/builder/home/go'
 
 timeout: "1600s"
