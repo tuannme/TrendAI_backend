@@ -5,12 +5,18 @@ steps:
   - name: 'gcr.io/$PROJECT_ID/dep'
     args: ['ensure', '-v']
     env:
-    - 'GOPATH='
+    - 'GOPATH=/gopath'
     - 'PROJECT_ROOT=github.com/trend-ai/TrendAI_backend'
+    volumes:
+    - name: 'go'
+      path: '/gopath'
 
   - name: "gcr.io/cloud-builders/gcloud"
     args: ["app", "deploy", "app.yml"]
     env:
-      - 'GOPATH='
+      - 'GOPATH=/gopath'
+    volumes:
+    - name: 'go'
+      path: '/gopath'
 
 timeout: "1600s"
