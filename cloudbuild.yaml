@@ -9,7 +9,7 @@ steps:
     - 'PROJECT_ROOT=github.com/trend-ai/TrendAI_backend'
 
   - name: "gcr.io/cloud-builders/gcloud"
-    args: ["app", "deploy", "app.yml"]
+    args: ["app", "deploy", "app.yml", "--log-http", "--verbosity=debug"]
     env:
       - 'GOPATH=/builder/home/go'
 
