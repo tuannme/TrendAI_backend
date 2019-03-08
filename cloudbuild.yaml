@@ -29,11 +29,11 @@ steps:
         echo "==> Running dep ensure..." && /builder/home/go/bin/dep ensure -v
 
   - name: gcr.io/cloud-builders/gcloud
-      args: ["config", "list"]
+    args: ["config", "list"]
 
   - name: gcr.io/cloud-builders/gcloud
-      dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
-      args: ["config", "list"]
+    dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
+    args: ["config", "list"]
 
   - name: gcr.io/cloud-builders/gcloud
     dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
