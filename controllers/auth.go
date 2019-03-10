@@ -83,6 +83,12 @@ func (o *AuthController) Login() {
 		user.UpdatedAt = time.Now().UTC()
 	}
 
+	// Store twitter's credentials
+	user.TwitterCredentials = models.TwitterCredentials{
+		AccessToken:       packet.AccessToken,
+		AccessTokenSecret: packet.AccessTokenSecret,
+	}
+
 	// Get user's tweets
 	tweets, _, err := client.Timelines.UserTimeline(&twitter.UserTimelineParams{
 		ScreenName: twitterUser.ScreenName,

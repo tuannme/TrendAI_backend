@@ -29,21 +29,22 @@ var UserGenders = map[int]string{
 }
 
 type User struct {
-	Id                 bson.ObjectId   `json:"id,omitempty" bson:"_id,omitempty"`
-	Name               string          `json:"name" bson:"name"`
-	Email              string          `json:"email" bson:"email"`
-	Gender             int             `json:"gender" bson:"gender"`
-	Dob                time.Time       `json:"dob" bson:"dob"`
-	Education          string          `json:"education" bson:"education"`
-	InterestCategories []bson.ObjectId `json:"interest_categories" bson:"interest_categories"`
-	FavouritesCount    int             `json:"favourites_count" bson:"favourites_count"`
-	FollowersCount     int             `json:"followers_count" bson:"followers_count"`
-	FriendsCount       int             `json:"friends_count" bson:"friends_count"`
-	StatusesCount      int             `json:"statuses_count" bson:"statuses_count"`
-	TweetStat          TweetStat       `json:"tweet_stat" bson:"tweet_stat,omitempty"`
-	ExternalUsers      []ExternalUser  `json:"external_users" bson:"external_users,omitempty"`
-	UpdatedAt          time.Time       `json:"updated_at" bson:"updated_at,omitempty"`
-	CreatedAt          time.Time       `json:"created_at" bson:"created_at,omitempty"`
+	Id                 bson.ObjectId      `json:"id,omitempty" bson:"_id,omitempty"`
+	Name               string             `json:"name" bson:"name"`
+	Email              string             `json:"email" bson:"email"`
+	Gender             int                `json:"gender" bson:"gender"`
+	Dob                time.Time          `json:"dob" bson:"dob"`
+	Education          string             `json:"education" bson:"education"`
+	InterestCategories []bson.ObjectId    `json:"interest_categories" bson:"interest_categories"`
+	FavouritesCount    int                `json:"favourites_count" bson:"favourites_count"`
+	FollowersCount     int                `json:"followers_count" bson:"followers_count"`
+	FriendsCount       int                `json:"friends_count" bson:"friends_count"`
+	StatusesCount      int                `json:"statuses_count" bson:"statuses_count"`
+	TweetStat          TweetStat          `json:"tweet_stat" bson:"tweet_stat,omitempty"`
+	ExternalUsers      []ExternalUser     `json:"external_users" bson:"external_users,omitempty"`
+	TwitterCredentials TwitterCredentials `json:"twitter_credentials,omitempty" bson:"twitter_credentials,omitempty"`
+	UpdatedAt          time.Time          `json:"updated_at" bson:"updated_at,omitempty"`
+	CreatedAt          time.Time          `json:"created_at" bson:"created_at,omitempty"`
 }
 
 type ExternalUser struct {
@@ -52,6 +53,11 @@ type ExternalUser struct {
 	Username        string    `json:"username" bson:"username"`
 	LastConnectedAt time.Time `json:"last_connected_at" bson:"last_connected_at"`
 	CreatedAt       time.Time `json:"created_at" bson:"created_at"`
+}
+
+type TwitterCredentials struct {
+	AccessToken       string `json:"access_token" json:"access_token"`
+	AccessTokenSecret string `json:"access_token_secret" bson:"access_token_secret"`
 }
 
 type TweetStat struct {
