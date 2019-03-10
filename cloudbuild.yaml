@@ -28,4 +28,4 @@ steps:
     dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
     args: ["app", "deploy", "app.yml"]
 
-timeout: "1600s"
+timeout: "1800s"
