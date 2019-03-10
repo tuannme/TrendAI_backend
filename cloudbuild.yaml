@@ -12,8 +12,8 @@ steps:
         echo "==> Making project direcory..." && mkdir -p /builder/home/go/src/github.com/trend-ai/TrendAI_backend
         echo "==> Coping default workspace to project directory..."
         cp -ra /workspace/. /builder/home/go/src/github.com/trend-ai/TrendAI_backend/
-        echo "==> Removing codebuild.yml in deployment space..."
-        rm /builder/home/go/src/github.com/trend-ai/TrendAI_backend/codebuild.yaml
+        echo "==> Removing cloudbuild.yaml in deployment space..."
+        rm /builder/home/go/src/github.com/trend-ai/TrendAI_backend/cloudbuild.yaml
         echo "==> List of files in project directory"
         ls -lah /builder/home/go/src/github.com/trend-ai/TrendAI_backend
   - name: gcr.io/cloud-builders/go:debian
