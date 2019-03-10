@@ -9,15 +9,15 @@ steps:
       - |
         echo "==> Instaling dep..." && go get -u github.com/golang/dep/cmd/dep
         echo "==> List of files in workspace" && ls -lah
-        echo "==> Making project direcory..." && mkdir -p /builder/home/go/src/github.com/trend-ai/TrendAI_backend
+        echo "==> Making project direcory..." && mkdir -p /builder/home/go/src/github.com/trend-ai/TrendAI_mobile_backend
         echo "==> Coping default workspace to project directory..."
-        cp -ra /workspace/. /builder/home/go/src/github.com/trend-ai/TrendAI_backend/
+        cp -ra /workspace/. /builder/home/go/src/github.com/trend-ai/TrendAI_mobile_backend/
         echo "==> Removing cloudbuild.yaml in deployment space..."
-        rm /builder/home/go/src/github.com/trend-ai/TrendAI_backend/cloudbuild.yaml
+        rm /builder/home/go/src/github.com/trend-ai/TrendAI_mobile_backend/cloudbuild.yaml
         echo "==> List of files in project directory"
-        ls -lah /builder/home/go/src/github.com/trend-ai/TrendAI_backend
+        ls -lah /builder/home/go/src/github.com/trend-ai/TrendAI_mobile_backend
   - name: gcr.io/cloud-builders/go:debian
-    dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
+    dir: /builder/home/go/src/github.com/trend-ai/TrendAI_mobile_backend
     entrypoint: bash
     args:
       - '-c'
@@ -25,7 +25,7 @@ steps:
         echo "==> Current working directory" && pwd
         echo "==> Running dep ensure..." && /builder/home/go/bin/dep ensure -v
   - name: gcr.io/cloud-builders/gcloud
-    dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
+    dir: /builder/home/go/src/github.com/trend-ai/TrendAI_mobile_backend
     args: ["app", "deploy", "app.yml"]
 
 timeout: "1800s"
