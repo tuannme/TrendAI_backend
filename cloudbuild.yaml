@@ -26,6 +26,6 @@ steps:
         echo "==> Running dep ensure..." && /builder/home/go/bin/dep ensure -v
   - name: gcr.io/cloud-builders/gcloud
     dir: /builder/home/go/src/github.com/trend-ai/TrendAI_backend
-    args: ["app", "deploy", "app.yml", "--log-http", "--verbosity=debug"]
+    args: ["app", "deploy", "app.yml"]
 
 timeout: "1600s"
