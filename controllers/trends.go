@@ -7,6 +7,7 @@ import (
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
+	"time"
 )
 
 // Operations about Users
@@ -102,15 +103,23 @@ func (o *TrendsController) Get() {
 		// Get topic collection
 		topicCollection := models.GetTopicCollection()
 
+		// Current time
+		now := time.Now().UTC()
+
 		// Loop all trending topics to update to database
 		for _, trend := range trendsList.Trends {
 			var topic models.Topic
 			if err := topicCollection.Find(bson.M{"name": trend.Name}).One(&topic); err != nil {
 				// Topic doesn't exists, create it
 				topic = models.Topic{
-					Id:     bson.NewObjectId(),
-					Name:   trend.Name,
-					Volume: trend.TweetVolume,
+					Id:        bson.NewObjectId(),
+					Name:      trend.Name,
+					Volume:    trend.TweetVolume,
+					UpdatedAt: now,
+					CreatedAt: now,
+				}
+				if woeid != 1 {
+					topic.Woeids = []int64{woeid}
 				}
 				if err := topicCollection.Insert(&topic); err != nil {
 					logs.Error("Couldn't insert new topic", err)
@@ -121,6 +130,20 @@ func (o *TrendsController) Get() {
 			} else {
 				// If topic already exists, update it
 				topic.Volume = trend.TweetVolume
+				topic.UpdatedAt = now
+				if woeid != 1 {
+					// Find woeid in this topic, if woeid doesn't exists in list, add it
+					found := false
+					for _, v := range topic.Woeids {
+						if v == woeid {
+							found = true
+							break
+						}
+					}
+					if !found {
+						topic.Woeids = append(topic.Woeids, woeid)
+					}
+				}
 				if err := topicCollection.UpdateId(topic.Id, topic); err != nil {
 					logs.Error("Couldn't update topic", err)
 					o.Ctx.Output.SetStatus(http.StatusInternalServerError)
