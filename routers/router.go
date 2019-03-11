@@ -22,6 +22,12 @@ func init() {
 				&controllers.UserController{},
 			),
 		),
+		beego.NSNamespace("/trends",
+			beego.NSBefore(authentications.JwtAuthenticationFilter()),
+			beego.NSInclude(
+				&controllers.TrendsController{},
+			),
+		),
 		beego.NSNamespace("/auth",
 			beego.NSInclude(
 				&controllers.AuthController{},

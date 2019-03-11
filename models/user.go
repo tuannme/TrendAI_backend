@@ -2,7 +2,9 @@ package models
 
 import (
 	"errors"
+	"github.com/dghubble/go-twitter/twitter"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
+	"github.com/trend-ai/TrendAI_mobile_backend/services/twitterservice"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"time"
@@ -29,22 +31,39 @@ var UserGenders = map[int]string{
 }
 
 type User struct {
-	Id                 bson.ObjectId      `json:"id,omitempty" bson:"_id,omitempty"`
-	Name               string             `json:"name" bson:"name"`
-	Email              string             `json:"email" bson:"email"`
-	Gender             int                `json:"gender" bson:"gender"`
-	Dob                time.Time          `json:"dob" bson:"dob"`
-	Education          string             `json:"education" bson:"education"`
-	InterestCategories []bson.ObjectId    `json:"interest_categories" bson:"interest_categories"`
-	FavouritesCount    int                `json:"favourites_count" bson:"favourites_count"`
-	FollowersCount     int                `json:"followers_count" bson:"followers_count"`
-	FriendsCount       int                `json:"friends_count" bson:"friends_count"`
-	StatusesCount      int                `json:"statuses_count" bson:"statuses_count"`
-	TweetStat          TweetStat          `json:"tweet_stat" bson:"tweet_stat,omitempty"`
-	ExternalUsers      []ExternalUser     `json:"external_users" bson:"external_users,omitempty"`
-	TwitterCredentials TwitterCredentials `json:"twitter_credentials,omitempty" bson:"twitter_credentials,omitempty"`
-	UpdatedAt          time.Time          `json:"updated_at" bson:"updated_at,omitempty"`
-	CreatedAt          time.Time          `json:"created_at" bson:"created_at,omitempty"`
+	Id                 bson.ObjectId       `json:"id,omitempty" bson:"_id,omitempty"`
+	Name               string              `json:"name" bson:"name"`
+	Email              string              `json:"email" bson:"email"`
+	Gender             int                 `json:"gender" bson:"gender"`
+	Dob                time.Time           `json:"dob" bson:"dob"`
+	Education          string              `json:"education" bson:"education"`
+	Location           *Location           `json:"location,omitempty" bson:"location,omitempty"`
+	InterestCategories []bson.ObjectId     `json:"interest_categories" bson:"interest_categories"`
+	FavouritesCount    int                 `json:"favourites_count" bson:"favourites_count"`
+	FollowersCount     int                 `json:"followers_count" bson:"followers_count"`
+	FriendsCount       int                 `json:"friends_count" bson:"friends_count"`
+	StatusesCount      int                 `json:"statuses_count" bson:"statuses_count"`
+	TweetStat          TweetStat           `json:"tweet_stat" bson:"tweet_stat,omitempty"`
+	ExternalUsers      []ExternalUser      `json:"external_users" bson:"external_users,omitempty"`
+	TwitterCredentials *TwitterCredentials `json:"twitter_credentials,omitempty" bson:"twitter_credentials,omitempty"`
+	UpdatedAt          time.Time           `json:"updated_at" bson:"updated_at,omitempty"`
+	CreatedAt          time.Time           `json:"created_at" bson:"created_at,omitempty"`
+}
+
+type Location struct {
+	Lat         float64 `json:"lat" bson:"lat"`
+	Lng         float64 `json:"lng" bson:"lng"`
+	Woeid       int64   `json:"woeid,omitempty" bson:"woeid,omitempty"`
+	Name        string  `json:"name,omitempty" bson:"name,omitempty"`
+	Country     string  `json:"country,omitempty" bson:"country,omitempty"`
+	CountryCode string  `json:"country_code,omitempty" bson:"country_code,omitempty"`
+	ParentId    int     `json:"parent_id,omitempty" bson:"parent_id,omitempty"`
+}
+
+type TweetStat struct {
+	ReplyCount    int `json:"reply_count" bson:"reply_count"`
+	RetweetCount  int `json:"retweet_count" bson:"retweet_count"`
+	FavoriteCount int `json:"favorite_count" bson:"favorite_count"`
 }
 
 type ExternalUser struct {
@@ -58,12 +77,6 @@ type ExternalUser struct {
 type TwitterCredentials struct {
 	AccessToken       string `json:"access_token" json:"access_token"`
 	AccessTokenSecret string `json:"access_token_secret" bson:"access_token_secret"`
-}
-
-type TweetStat struct {
-	ReplyCount    int `json:"reply_count" bson:"reply_count"`
-	RetweetCount  int `json:"retweet_count" bson:"retweet_count"`
-	FavoriteCount int `json:"favorite_count" bson:"favorite_count"`
 }
 
 type UserResponse struct {
@@ -88,6 +101,11 @@ func (u *User) ToResponse() UserResponse {
 		Education: u.Education,
 		CreatedAt: u.CreatedAt,
 	}
+}
+
+// Create new twitter client from current credentials
+func (u *User) NewTwitterClient() *twitter.Client {
+	return twitterservice.NewTwitterClient(u.TwitterCredentials.AccessToken, u.TwitterCredentials.AccessTokenSecret)
 }
 
 // Convert gender in int to string

@@ -74,6 +74,26 @@
                 }
             }
         },
+        "/trends/": {
+            "get": {
+                "tags": [
+                    "trends"
+                ],
+                "description": "Get trending topics by location",
+                "operationId": "TrendsController.Get",
+                "responses": {
+                    "200": {
+                        "description": "{object} []models.TopicResponse"
+                    },
+                    "400": {
+                        "description": "{object} models.ResponseWithError"
+                    },
+                    "500": {
+                        "description": "{object} models.ResponseWithError"
+                    }
+                }
+            }
+        },
         "/user/": {
             "get": {
                 "tags": [
@@ -225,6 +245,10 @@
     "tags": [
         {
             "name": "user",
+            "description": "Operations about Users\n"
+        },
+        {
+            "name": "trends",
             "description": "Operations about Users\n"
         }
     ]

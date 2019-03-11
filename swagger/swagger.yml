@@ -50,6 +50,19 @@ paths:
           description: '{object} models.ResponseWithError'
         "401":
           description: '{object} models.ResponseWithError'
+  /trends/:
+    get:
+      tags:
+      - trends
+      description: Get trending topics by location
+      operationId: TrendsController.Get
+      responses:
+        "200":
+          description: '{object} []models.TopicResponse'
+        "400":
+          description: '{object} models.ResponseWithError'
+        "500":
+          description: '{object} models.ResponseWithError'
   /user/:
     get:
       tags:
@@ -150,5 +163,8 @@ definitions:
         type: string
 tags:
 - name: user
+  description: |
+    Operations about Users
+- name: trends
   description: |
     Operations about Users

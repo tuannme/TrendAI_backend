@@ -5,10 +5,10 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/dghubble/go-twitter/twitter"
-	"github.com/dghubble/oauth1"
 	"github.com/trend-ai/TrendAI_mobile_backend/conf"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/authentications"
+	"github.com/trend-ai/TrendAI_mobile_backend/services/twitterservice"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"strconv"
@@ -47,13 +47,8 @@ func (o *AuthController) Login() {
 		return
 	}
 
-	// http.Client will automatically authorize Requests
-	config := oauth1.NewConfig(conf.Get().TwitterConsumerKey, conf.Get().TwitterConsumerSecret)
-	token := oauth1.NewToken(packet.AccessToken, packet.AccessTokenSecret)
-	httpClient := config.Client(oauth1.NoContext, token)
-
-	// twitter client
-	client := twitter.NewClient(httpClient)
+	// Get new twitter client
+	client := twitterservice.NewTwitterClient(packet.AccessToken, packet.AccessTokenSecret)
 
 	// Validate credentials
 	IncludeEmail := true
@@ -84,7 +79,7 @@ func (o *AuthController) Login() {
 	}
 
 	// Store twitter's credentials
-	user.TwitterCredentials = models.TwitterCredentials{
+	user.TwitterCredentials = &models.TwitterCredentials{
 		AccessToken:       packet.AccessToken,
 		AccessTokenSecret: packet.AccessTokenSecret,
 	}
