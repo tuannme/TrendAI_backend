@@ -214,3 +214,63 @@ Get list of categories available.
             "code": "get_failed",
             "message": "Couldn't get list categories"
         }
+
+
+### Get trending topics [GET /trends{?lat,lng}]
+
+Get list of trending topics by location.
+
++ Parameters
+    + lat (optional, float) - Location's latitude
+    + lng (optional, float) - Location's longitude
+
++ Request (application/json)
+
+    + Headers
+        
+            Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NTA2ODAyNDYsIm5iZiI6MTU1MDY4MDI0NiwianRpIjoiNGU0OGRhOTUtZDEyMS00MmViLWE4MWQtNGE4YmUzNzQ1NDNkIiwiZXhwIjoxNTUwNjgxMTQ2LCJpZGVudGl0eSI6IjVjNmQ0NmYyMzlkYThlMDA0NTkzMzczYyIsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.qAuvOPCQVr3YAFuD6B4RmqLmEokv-05ttL8BzPRBAug
+
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": "5c867826f4e15b63d1954e59",
+                "name": "Seungri",
+                "volume": 564238
+            },
+            {
+                "id": "5c867826f4e15b63d1954e5a",
+                "name": "#EpikHighxSUGA",
+                "volume": 108667
+            },
+            {
+                "id": "5c867826f4e15b63d1954e5b",
+                "name": "#PerthFMTinVietNam",
+                "volume": 46406
+            },
+            {
+                "id": "5c867826f4e15b63d1954e5c",
+                "name": "Jimin",
+                "volume": 1253731
+            },
+            {
+                "id": "5c867826f4e15b63d1954e5d",
+                "name": "#2wish",
+                "volume": 51056
+            }
+        ]
+
++ Response 400 (application/json)
+
+        {
+            "code": "get_failed",
+            "message": "Couldn't get trending data."
+        }
+
++ Response 500 (application/json)
+
+        {
+            "code": "get_failed",
+            "message": "Couldn't get trending data."
+        }
