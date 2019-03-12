@@ -99,9 +99,14 @@ func (u *User) ToResponse() UserResponse {
 	}
 }
 
-// Create new twitter client from current credentials
+// Create new twitter client from twitter credentials
+func (t *TwitterCredentials) NewTwitterClient() *twitter.Client {
+	return twitterservice.NewTwitterClient(t.AccessToken, t.AccessTokenSecret)
+}
+
+// Create new twitter client from current user's credentials
 func (u *User) NewTwitterClient() *twitter.Client {
-	return twitterservice.NewTwitterClient(u.TwitterCredentials.AccessToken, u.TwitterCredentials.AccessTokenSecret)
+	return u.TwitterCredentials.NewTwitterClient()
 }
 
 // Convert gender in int to string

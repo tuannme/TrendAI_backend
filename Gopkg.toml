@@ -60,3 +60,7 @@
 [[constraint]]
   name = "firebase.google.com/go"
   version = "3.6.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/jasonlvhit/gocron"
