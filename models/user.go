@@ -51,13 +51,9 @@ type User struct {
 }
 
 type Location struct {
-	Lat         float64 `json:"lat" bson:"lat"`
-	Lng         float64 `json:"lng" bson:"lng"`
-	Woeid       int64   `json:"woeid,omitempty" bson:"woeid,omitempty"`
-	Name        string  `json:"name,omitempty" bson:"name,omitempty"`
-	Country     string  `json:"country,omitempty" bson:"country,omitempty"`
-	CountryCode string  `json:"country_code,omitempty" bson:"country_code,omitempty"`
-	ParentId    int     `json:"parent_id,omitempty" bson:"parent_id,omitempty"`
+	Lat   float64 `json:"lat" bson:"lat"`
+	Lng   float64 `json:"lng" bson:"lng"`
+	Woeid int64   `json:"woeid,omitempty" bson:"woeid,omitempty"`
 }
 
 type TweetStat struct {

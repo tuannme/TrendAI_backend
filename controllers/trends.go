@@ -35,7 +35,7 @@ func (o *TrendsController) Get() {
 	client := user.NewTwitterClient()
 
 	// Default WOEID
-	var woeid int64 = 1
+	var woeId int64 = models.DefaultWoeID
 
 	// Get lat, lng from request
 	var lat, lng float64
@@ -62,29 +62,30 @@ func (o *TrendsController) Get() {
 
 		// Get closest location
 		location := locations[0]
-		woeid = location.WOEID
+		woeId = location.WOEID
+
+		// Update WOE location to our database
+		woeLocation := models.ToWoeLocation(location)
+		if err = woeLocation.Sync(); err != nil {
+			logs.Error("Couldn't update WOE location", err)
+		}
 
 		// Save location to current user's data if they haven't location yet
 		if user.Location == nil {
 			user.Location = &models.Location{
-				Lat:         lat,
-				Lng:         lng,
-				Woeid:       woeid,
-				Name:        location.Name,
-				Country:     location.Country,
-				CountryCode: location.CountryCode,
-				ParentId:    location.ParentID,
+				Lat:   lat,
+				Lng:   lng,
+				Woeid: woeId,
 			}
 			// Save user's data
-			err := models.GetUserCollection().UpdateId(user.Id, user)
-			if err != nil {
+			if err := models.GetUserCollection().UpdateId(user.Id, user); err != nil {
 				logs.Error("Update user's location failed", err)
 			}
 		}
 	}
 
 	// Get trending topic for this location
-	trends, _, err := client.Trends.Place(woeid, nil)
+	trends, _, err := client.Trends.Place(woeId, nil)
 	if err != nil {
 		logs.Error("Couldn't get trending data", err)
 		o.Ctx.Output.SetStatus(http.StatusBadRequest)
@@ -118,8 +119,8 @@ func (o *TrendsController) Get() {
 					UpdatedAt: now,
 					CreatedAt: now,
 				}
-				if woeid != 1 {
-					topic.Woeids = []int64{woeid}
+				if woeId != models.DefaultWoeID {
+					topic.Woeids = []int64{woeId}
 				}
 				if err := topicCollection.Insert(&topic); err != nil {
 					logs.Error("Couldn't insert new topic", err)
@@ -131,17 +132,17 @@ func (o *TrendsController) Get() {
 				// If topic already exists, update it
 				topic.Volume = trend.TweetVolume
 				topic.UpdatedAt = now
-				if woeid != 1 {
+				if woeId != models.DefaultWoeID {
 					// Find woeid in this topic, if woeid doesn't exists in list, add it
 					found := false
 					for _, v := range topic.Woeids {
-						if v == woeid {
+						if v == woeId {
 							found = true
 							break
 						}
 					}
 					if !found {
-						topic.Woeids = append(topic.Woeids, woeid)
+						topic.Woeids = append(topic.Woeids, woeId)
 					}
 				}
 				if err := topicCollection.UpdateId(topic.Id, topic); err != nil {
