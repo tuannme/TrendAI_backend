@@ -7,10 +7,4 @@ resources:
   memory_gb: 0.5
   disk_size_gb: 10
 env_variables:
-  APP_NAME: TrendAiBackend
   APP_RUN_MODE: prod
-  APP_PORT: 8080
-  MONGO_DATABASE: trendAi
-  MONGO_URI: mongodb://10.142.0.2:27017/trendAi
-skip_files:
-  - conf/service_account.json
