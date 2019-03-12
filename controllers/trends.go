@@ -17,7 +17,7 @@ type TrendsController struct {
 
 // @Title Get
 // @Description Get trending topics by location
-// @Failure 200 {object} []models.TopicResponse
+// @Failure 200 {object} []models.TrendingTopicResponse
 // @Failure 400 {object} models.ResponseWithError
 // @Failure 500 {object} models.ResponseWithError
 // @router / [get]
@@ -94,7 +94,7 @@ func (o *TrendsController) Get() {
 	}
 
 	// Init response data
-	topicsResponse := make([]models.TopicResponse, 0)
+	topicsResponse := make([]models.TrendingTopicResponse, 0)
 
 	// Check if trending topics available for this location
 	if trends != nil && len(trends) > 0 {
@@ -102,17 +102,17 @@ func (o *TrendsController) Get() {
 		trendsList := trends[0]
 
 		// Get topic collection
-		topicCollection := models.GetTopicCollection()
+		topicCollection := models.GetTrendingTopicCollection()
 
 		// Current time
 		now := time.Now().UTC()
 
 		// Loop all trending topics to update to database
 		for _, trend := range trendsList.Trends {
-			var topic models.Topic
+			var topic models.TrendingTopic
 			if err := topicCollection.Find(bson.M{"name": trend.Name}).One(&topic); err != nil {
 				// Topic doesn't exists, create it
-				topic = models.Topic{
+				topic = models.TrendingTopic{
 					Id:        bson.NewObjectId(),
 					Name:      trend.Name,
 					Volume:    trend.TweetVolume,

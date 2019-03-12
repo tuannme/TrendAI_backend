@@ -58,7 +58,7 @@ paths:
       operationId: TrendsController.Get
       responses:
         "200":
-          description: '{object} []models.TopicResponse'
+          description: '{object} []models.TrendingTopicResponse'
         "400":
           description: '{object} models.ResponseWithError'
         "500":

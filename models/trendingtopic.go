@@ -7,17 +7,17 @@ import (
 	"time"
 )
 
-var topicCollection *mgo.Collection
+var trendingTopicCollection *mgo.Collection
 
 func init() {
-	topicCollection = databases.GetMongoCollection("topics")
+	trendingTopicCollection = databases.GetMongoCollection("trendingTopics")
 }
 
-func GetTopicCollection() *mgo.Collection {
-	return topicCollection
+func GetTrendingTopicCollection() *mgo.Collection {
+	return trendingTopicCollection
 }
 
-type Topic struct {
+type TrendingTopic struct {
 	Id        bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	Name      string        `json:"name" bson:"name"`
 	Volume    int64         `json:"volume" bson:"volume"`
@@ -26,14 +26,14 @@ type Topic struct {
 	CreatedAt time.Time     `json:"created_at" bson:"created_at,omitempty"`
 }
 
-type TopicResponse struct {
+type TrendingTopicResponse struct {
 	Id     string `json:"id"`
 	Name   string `json:"name"`
 	Volume int64  `json:"volume"`
 }
 
-func (t *Topic) ToResponse() TopicResponse {
-	return TopicResponse{
+func (t *TrendingTopic) ToResponse() TrendingTopicResponse {
+	return TrendingTopicResponse{
 		Id:     t.Id.Hex(),
 		Name:   t.Name,
 		Volume: t.Volume,
