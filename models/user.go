@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"github.com/dghubble/go-twitter/twitter"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/twitterservice"
 	"gopkg.in/mgo.v2"
@@ -100,13 +99,28 @@ func (u *User) ToResponse() UserResponse {
 }
 
 // Create new twitter client from twitter credentials
-func (t *TwitterCredentials) NewTwitterClient() *twitter.Client {
+func (t *TwitterCredentials) NewTwitterClient() *twitterservice.TwitterClient {
 	return twitterservice.NewTwitterClient(t.AccessToken, t.AccessTokenSecret)
 }
 
 // Create new twitter client from current user's credentials
-func (u *User) NewTwitterClient() *twitter.Client {
+func (u *User) NewTwitterClient() *twitterservice.TwitterClient {
 	return u.TwitterCredentials.NewTwitterClient()
+}
+
+// Update new location for this user
+func (u *User) UpdateLocation(location *Location, override bool) error {
+	// Save location to current user's data if they haven't location yet
+	if override || u.Location == nil {
+		backupLocation := u.Location
+		u.Location = location
+		// Save user's data
+		if err := userCollection.UpdateId(u.Id, u); err != nil {
+			u.Location = backupLocation
+			return err
+		}
+	}
+	return nil
 }
 
 // Convert gender in int to string

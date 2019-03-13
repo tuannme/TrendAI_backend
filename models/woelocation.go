@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/trend-ai/TrendAI_mobile_backend/services/databases"
+	"github.com/trend-ai/TrendAI_mobile_backend/services/twitterservice"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -50,6 +51,22 @@ func ToWoeLocation(location twitter.Location) WoeLocation {
 	}
 }
 
+// Convert latitude, longitude to woe location and sync it to our database
+func SyncWoeLocation(client *twitterservice.TwitterClient, lat float64, lng float64, woeLocation *WoeLocation) error {
+	// Find Woe location by latitude, longitude
+	location, err := client.GetWoeLocationByLatLng(lat, lng)
+	if err != nil {
+		return err
+	}
+	// Update WOE location to our database
+	woe := ToWoeLocation(*location)
+	if err = woe.Sync(); err != nil {
+		return err
+	}
+	*woeLocation = woe
+	return nil
+}
+
 // Sync WOE location with our database
 func (woe *WoeLocation) Sync() error {
 	var woeLocation WoeLocation
@@ -67,6 +84,7 @@ func (woe *WoeLocation) Sync() error {
 		return nil
 	}
 
+	woe.Id = woeLocation.Id
 	// If WOE already exists on our database, update it
 	if woeLocation.TrendsAvailable {
 		woe.TrendsAvailable = true

@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"github.com/dghubble/go-twitter/twitter"
 	"github.com/trend-ai/TrendAI_mobile_backend/models"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
@@ -34,53 +33,27 @@ func (o *TrendsController) Get() {
 	// Create new twitter client from current user
 	client := user.NewTwitterClient()
 
-	// Default WOEID
+	// Default WoeId
 	var woeId int64 = models.DefaultWoeID
 
 	// Get lat, lng from request
-	var lat, lng float64
 	lat, errLat := o.GetFloat("lat")
 	lng, errLng := o.GetFloat("lng")
 
 	// If request has location
 	if errLat == nil && errLng == nil {
-		// Find WOEID by latitude, longitude
-		locations, _, err := client.Trends.Closest(&twitter.ClosestParams{
-			Lat:  lat,
-			Long: lng,
-		})
-
-		// Check if location is invalid
-		if err != nil || locations == nil || len(locations) <= 0 {
-			if err != nil {
-				logs.Error("Couldn't get WOEID by location", err)
-			}
+		var woeLocation models.WoeLocation
+		// Sync lat, lng with WOE location
+		if err := models.SyncWoeLocation(client, lat, lng, &woeLocation); err != nil {
+			logs.Error("Couldn't sync lat, lng with woe location", err)
 			o.Ctx.Output.SetStatus(http.StatusBadRequest)
 			res = models.NewResponseWithError("invalid_location", "Invalid location.")
 			return
 		}
-
-		// Get closest location
-		location := locations[0]
-		woeId = location.WOEID
-
-		// Update WOE location to our database
-		woeLocation := models.ToWoeLocation(location)
-		if err = woeLocation.Sync(); err != nil {
-			logs.Error("Couldn't update WOE location", err)
-		}
-
+		woeId = woeLocation.Woeid
 		// Save location to current user's data if they haven't location yet
-		if user.Location == nil {
-			user.Location = &models.Location{
-				Lat:   lat,
-				Lng:   lng,
-				Woeid: woeId,
-			}
-			// Save user's data
-			if err := models.GetUserCollection().UpdateId(user.Id, user); err != nil {
-				logs.Error("Update user's location failed", err)
-			}
+		if err := user.UpdateLocation(&models.Location{Lat: lat, Lng: lng, Woeid: woeId}, false); err != nil {
+			logs.Error("Update user's location failed", err)
 		}
 	}
 
