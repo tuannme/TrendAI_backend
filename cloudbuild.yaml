@@ -26,6 +26,15 @@ steps:
         echo "==> Running dep ensure..." && /builder/home/go/bin/dep ensure -v
   - name: gcr.io/cloud-builders/gcloud
     dir: /builder/home/go/src/github.com/trend-ai/TrendAI_mobile_backend
-    args: ["app", "deploy", "app.yml"]
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        echo "==> Deploying application to App Engine..."
+        gcloud app deploy app.yml
+        echo "==> Pushing notification to slack channel..."
+        curl -X POST \
+          --data-urlencode 'payload={"text": "Successfully deployed to https://trendai-bb810.appspot.com/"}' \
+          $_SLACK_URL
 
 timeout: "1800s"
