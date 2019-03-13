@@ -34,7 +34,7 @@ steps:
         gcloud app deploy app.yml
         echo "==> Pushing notification to slack channel..."
         curl -X POST \
-          --data-urlencode 'payload={"text": "Successfully deployed to https://trendai-bb810.appspot.com/\nApplication version: $BUILD_ID"}' \
+          --data-urlencode 'payload={"text": "Successfully deployed to https://trendai-bb810.appspot.com/\nCommit sha: <https://github.com/trend-ai/TrendAI_backend/commit/$COMMIT_SHA|$SHORT_SHA>"}' \
           $_SLACK_URL
 
 timeout: "1800s"
