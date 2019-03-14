@@ -62,7 +62,7 @@ func (o *AuthController) Login() {
 		return
 	}
 
-	twitterUser := models.TwitterUser(*remoteTwitterUser)
+	twitterUser := models.ExternalTwitterUser(*remoteTwitterUser)
 	userCollection := models.GetUserCollection()
 
 	// Get internal user which matched with twitter email
